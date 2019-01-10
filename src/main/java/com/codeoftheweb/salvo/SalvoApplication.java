@@ -35,21 +35,21 @@ public class SalvoApplication {
 	}
 
 	@Bean
-	public CommandLineRunner initGameData(GamesRepository gamesRepo) {
+	public CommandLineRunner initGameData(GameRepository gameRepo) {
 		return (args) -> {
 			// save a couple of Games
 			Date date = new Date();
-			Games g1 = new Games(date);
-			Games g2 = new Games(Date.from(date.toInstant().plusSeconds(3600)));
-			Games g3 = new Games(Date.from(date.toInstant().plusSeconds(7200)));
-			Games g4 = new Games(Date.from(date.toInstant().plusSeconds(10800)));
-			Games g5 = new Games(Date.from(date.toInstant().plusSeconds(14400)));
+			Game g1 = new Game(date);
+			Game g2 = new Game(Date.from(date.toInstant().plusSeconds(3600)));
+			Game g3 = new Game(Date.from(date.toInstant().plusSeconds(7200)));
+			Game g4 = new Game(Date.from(date.toInstant().plusSeconds(10800)));
+			Game g5 = new Game(Date.from(date.toInstant().plusSeconds(14400)));
 
-			gamesRepo.save(g1);
-			gamesRepo.save(g2);
-			gamesRepo.save(g3);
-			gamesRepo.save(g4);
-			gamesRepo.save(g5);
+			gameRepo.save(g1);
+			gameRepo.save(g2);
+			gameRepo.save(g3);
+			gameRepo.save(g4);
+			gameRepo.save(g5);
 
 		};
 	}

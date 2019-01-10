@@ -10,16 +10,16 @@ import java.util.Date;
 
 
 @Entity
-public class Games {
+public class Game {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private int id;
     private Date date;
-    public Games() { }
+    public Game() { }
 
-    public Games(Date date) {
+    public Game(Date date) {
         this.date = date;
     }
 
