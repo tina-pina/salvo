@@ -4,9 +4,12 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class GamePlayer {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
@@ -21,14 +24,31 @@ public class GamePlayer {
     @JoinColumn(name="game_id")
     private Game game;
 
+    @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
+    Set<Ship> ships;
+
     private Date creationDate;
 
     public GamePlayer() { }
 
-    public GamePlayer(Player player, Game game) {
+    public GamePlayer(Game game, Player player) {
         this.player = player;
         this.game = game;
         this.creationDate = new Date();
+    }
+
+    public long getId() { return id; }
+
+    public Player getPlayer() { return player; }
+
+    public Game getGame() { return game; }
+
+    public Set<Ship> getShips() {
+        return ships;
+    }
+
+    public void addShip(Ship ship) {
+        ships.add(ship);
     }
 
 }

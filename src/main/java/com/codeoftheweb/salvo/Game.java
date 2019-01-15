@@ -15,7 +15,7 @@ public class Game {
     @GenericGenerator(name = "native", strategy = "native")
     private int id;
 
-    @OneToMany(mappedBy="player", fetch= FetchType.EAGER)
+    @OneToMany(mappedBy="game", fetch= FetchType.EAGER)
     Set<GamePlayer> gamePlayers;
 
     private Date date;
@@ -34,9 +34,14 @@ public class Game {
         return this.id;
     }
 
+    public Set<GamePlayer> getGamePlayers() { return gamePlayers; }
+
     public void setDate(Date date) {
-        date = new Date();
-        this.date = date;
+        this.date = new Date();
     }
 
+    @Override
+    public String toString() {
+        return "[" + id + "]";
+    }
 }

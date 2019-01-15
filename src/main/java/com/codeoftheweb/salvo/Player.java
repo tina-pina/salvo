@@ -16,7 +16,7 @@ public class Player {
     private String lastName;
     private String email;
 
-    @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
     Set<GamePlayer> gamePlayers;
 
     public Player() { }
@@ -25,6 +25,10 @@ public class Player {
         this.firstName = first;
         this.lastName = last;
         this.email = email;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getFirstName() {
@@ -49,7 +53,5 @@ public class Player {
         this.email = email;
     }
 
-    public String toString() {
-        return firstName + " " + lastName;
-    }
+    public String toString() { return firstName + " " + lastName; }
 }
