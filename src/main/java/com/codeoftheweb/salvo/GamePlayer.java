@@ -4,7 +4,6 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -56,6 +55,14 @@ public class GamePlayer {
 
     public void addShip(Ship ship) {
         ships.add(ship);
+    }
+
+    public Score getScore() {
+        Set<Score> gameScores = game.getScores();
+        for(Score s: gameScores) {
+            if(s.getPlayer().getId() == player.getId()) return s;
+        }
+        return null;
     }
 
 }

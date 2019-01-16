@@ -20,92 +20,78 @@ public class SalvoApplication {
 
 	@Bean
 	public CommandLineRunner initGamePlayerData(PlayerRepository playerRepo,
-												GameRepository gameRepo,
-												GamePlayerRepository gamePlayerRepo,
-												ShipRepository shipRepository, SalvoRepository salvoRepository) {
+                                              GameRepository gameRepo,
+                                              GamePlayerRepository gamePlayerRepo,
+                                              ShipRepository shipRepo,
+                                              SalvoRepository salvoRepo,
+                                              ScoreRepository scoreRepo) {
 		return (args) -> {
 
-			Player p1 = new Player("", "", "j.bauer@ctu.gov");
-			Player p2 = new Player("", "", "c.obrian@ctu.gov");
-			Player p3 = new Player("", "", "t.almeida@ctu.gov");
-			Player p4 = new Player("", "", "d.palmer@whitehouse.gov");
-
-			playerRepo.save(p1);
+      Player p1 = new Player("", "", "j.bauer@ctu.gov"); // playing game 1
+      Player p2 = new Player("", "", "c.obrian@ctu.gov"); // playing game 1,2
+      Player p3 = new Player("", "", "t.almeida@ctu.gov"); // playing game 2
+      Player p4 = new Player("", "", "d.palmer@whitehouse.gov"); // playing game 2
+      playerRepo.save(p1);
 			playerRepo.save(p2);
 			playerRepo.save(p3);
 			playerRepo.save(p4);
 
-			Game g1 = new Game(new Date());
-			Game g2 = new Game(new Date());
-			Game g3 = new Game(new Date());
-			Game g4 = new Game(new Date());
-			Game g5 = new Game(new Date());
-			Game g6 = new Game(new Date());
-
-			gameRepo.save(g1);
+      Game g1 = new Game(new Date()); // played by player 1,2
+      Game g2 = new Game(new Date()); // played by player 2,3,4
+      gameRepo.save(g1);
 			gameRepo.save(g2);
-			gameRepo.save(g3);
-			gameRepo.save(g4);
-			gameRepo.save(g5);
-			gameRepo.save(g6);
 
-			GamePlayer GP1 = new GamePlayer(g1, p1);
-			GamePlayer GP2 = new GamePlayer(g2, p2);
-			GamePlayer GP3 = new GamePlayer(g2, p1);
-			GamePlayer GP4 = new GamePlayer(g2, p2);
-			GamePlayer GP5 = new GamePlayer(g3, p2);
-			GamePlayer GP6 = new GamePlayer(g3, p3);
-			GamePlayer GP7 = new GamePlayer(g4, p1);
-			GamePlayer GP8 = new GamePlayer(g4, p2);
-			GamePlayer GP9 = new GamePlayer(g5, p3);
-			GamePlayer GP10 = new GamePlayer(g5, p1);
-			GamePlayer GP11 = new GamePlayer(g6, p4);
+      GamePlayer GP1 = new GamePlayer(g1, p1); // has 5 ships, has 2 salvos
+      GamePlayer GP2 = new GamePlayer(g1, p2); // has 0 ship, has 2 salvos
+      GamePlayer GP3 = new GamePlayer(g2, p2); // has 5 ships,
+      GamePlayer GP4 = new GamePlayer(g2, p3); // has 0 ship
+      GamePlayer GP5 = new GamePlayer(g2, p4); // has 0 ship
+      gamePlayerRepo.save(GP1);
+      gamePlayerRepo.save(GP2);
+      gamePlayerRepo.save(GP3);
+      gamePlayerRepo.save(GP4);
+      gamePlayerRepo.save(GP5);
 
-			gamePlayerRepo.save(GP1);
-			gamePlayerRepo.save(GP2);
-			gamePlayerRepo.save(GP3);
-			gamePlayerRepo.save(GP4);
-			gamePlayerRepo.save(GP5);
-			gamePlayerRepo.save(GP6);
-			gamePlayerRepo.save(GP7);
-			gamePlayerRepo.save(GP8);
-			gamePlayerRepo.save(GP9);
-			gamePlayerRepo.save(GP10);
-			gamePlayerRepo.save(GP11);
-
-			Ship S1 = new Ship("Aircraft Carrier", new ArrayList<String>(asList("B5", "B6", "B7", "B8", "B9")), GP1);
-//			Ship S2 = new Ship("Battleship", new ArrayList<String>(asList("D4", "D5", "D6", "D7")) , GP1);
-//			Ship S3 = new Ship("Submarine", new ArrayList<String>(asList("F3", "G3", "H3")) , GP1);
-//			Ship S4 = new Ship("Destroyer", new ArrayList<String>(asList("F5", "G5", "H5")) , GP1);
-//			Ship S5 = new Ship("Patrol Boat", new ArrayList<String>(asList("I8", "I9")) , GP1);
-
-			Ship S11 = new Ship("Aircraft Carrier", new ArrayList<String>(asList("C2", "C3", "C4", "C5", "C6")) , GP2);
-//			Ship S12 = new Ship("Battleship", new ArrayList<String>(asList("E2", "E3", "E4", "E5")) , GP2);
-//			Ship S13 = new Ship("Submarine", new ArrayList<String>(asList("G2", "H2", "I2")) , GP2);
-//			Ship S14 = new Ship("Destroyer", new ArrayList<String>(asList("G7", "G8", "G9")) , GP2);
-//			Ship S15 = new Ship("Patrol Boat", new ArrayList<String>(asList("J9", "J10")) , GP2);
-
-			shipRepository.save(S1);
-//			shipRepository.save(S2);
-//			shipRepository.save(S3);
-//			shipRepository.save(S4);
-//			shipRepository.save(S5);
-			shipRepository.save(S11);
-//			shipRepository.save(S12);
-//			shipRepository.save(S13);
-//			shipRepository.save(S14);
-//			shipRepository.save(S15);
+      Ship S1 = new Ship("Aircraft Carrier", new ArrayList<String>(asList("B5", "B6", "B7", "B8", "B9")), GP1);
+			Ship S2 = new Ship("Battleship", new ArrayList<String>(asList("D4", "D5", "D6", "D7")) , GP1);
+			Ship S3 = new Ship("Submarine", new ArrayList<String>(asList("F3", "G3", "H3")) , GP1);
+			Ship S4 = new Ship("Destroyer", new ArrayList<String>(asList("F5", "G5", "H5")) , GP1);
+			Ship S5 = new Ship("Patrol Boat", new ArrayList<String>(asList("I8", "I9")) , GP1);
+			Ship S11 = new Ship("Aircraft Carrier", new ArrayList<String>(asList("C2", "C3", "C4", "C5", "C6")) , GP3);
+			Ship S12 = new Ship("Battleship", new ArrayList<String>(asList("E2", "E3", "E4", "E5")) , GP3);
+			Ship S13 = new Ship("Submarine", new ArrayList<String>(asList("G2", "H2", "I2")) , GP3);
+			Ship S14 = new Ship("Destroyer", new ArrayList<String>(asList("G7", "G8", "G9")) , GP3);
+			Ship S15 = new Ship("Patrol Boat", new ArrayList<String>(asList("J9", "J10")) , GP3);
+			shipRepo.save(S1);
+      shipRepo.save(S2);
+      shipRepo.save(S3);
+      shipRepo.save(S4);
+      shipRepo.save(S5);
+      shipRepo.save(S11);
+      shipRepo.save(S12);
+      shipRepo.save(S13);
+      shipRepo.save(S14);
+      shipRepo.save(S15);
 
 
-      Salvo Sa1 = new Salvo(new ArrayList<String>(asList("C2", "C3", "C4", "C5", "C6")), GP1,  1);
-      Salvo Sa2 = new Salvo(new ArrayList<String>(asList("C1", "C5", "D1", "A1", "B4")), GP2,  2);
-      Salvo Sa3 = new Salvo(new ArrayList<String>(asList("B1", "D5", "D1", "A2", "B6")), GP5,  1);
-      Salvo Sa4 = new Salvo(new ArrayList<String>(asList("C4", "C6", "D4", "A3", "B5")), GP7,  2);
+			Salvo Sa1 = new Salvo(new ArrayList<String>(asList("C2", "C3", "C4", "C5", "C6")), GP1,  1);
+      Salvo Sa2 = new Salvo(new ArrayList<String>(asList("C1", "C5", "D1", "A1", "B4")), GP1,  2);
+      Salvo Sa3 = new Salvo(new ArrayList<String>(asList("B1", "D5", "D1", "A2", "B6")), GP2,  1);
+      Salvo Sa4 = new Salvo(new ArrayList<String>(asList("C4", "C6", "D4", "A3", "B5")), GP2,  2);
+      salvoRepo.save(Sa1);
+      salvoRepo.save(Sa2);
+      salvoRepo.save(Sa3);
+      salvoRepo.save(Sa4);
 
-      salvoRepository.save(Sa1);
-      salvoRepository.save(Sa2);
-      salvoRepository.save(Sa3);
-      salvoRepository.save(Sa4);
+      Score Sc1 = new Score(g1, p1, 2.5, new Date());
+      Score Sc2 = new Score(g1, p2, 4.5, new Date());
+      Score Sc3 = new Score(g2, p1, 5.5, new Date());
+      Score Sc4 = new Score(g2, p2, 1.5, new Date());
+      scoreRepo.save(Sc1);
+      scoreRepo.save(Sc2);
+      scoreRepo.save(Sc3);
+      scoreRepo.save(Sc4);
+
 		};
 	}
 }

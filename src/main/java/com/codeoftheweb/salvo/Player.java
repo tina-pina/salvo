@@ -19,6 +19,9 @@ public class Player {
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
     Set<GamePlayer> gamePlayers;
 
+    @OneToMany(mappedBy="player", fetch= FetchType.EAGER)
+    Set<Score> scores;
+
     public Player() { }
 
     public Player(String first, String last, String email) {
@@ -54,4 +57,21 @@ public class Player {
     }
 
     public String toString() { return firstName + " " + lastName; }
+
+    public Set<GamePlayer> getGamePlayers() {
+        return gamePlayers;
+    }
+
+    public Set<Score> getScores() {
+        return scores;
+    }
+
+    public Score getScore(Game g) {
+        for(Score score: scores) {
+            if(score.getGame().getId() == g.getId()) {
+                return score;
+            }
+        }
+        return null;
+    }
 }

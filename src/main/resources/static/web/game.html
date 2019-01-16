@@ -10,8 +10,7 @@
       <!--margin: 0 auto;-->
     }
 
-    #grid {
-        width: 80%;
+    #shipsGrid, #salvosGrid {
         margin: 0 auto;
     }
 
@@ -24,18 +23,42 @@
       text-align: center;
     }
 
+    .container {
+       display: flex;
+       justify-content: space-around;
+       align-items: center;
+       margin: 0 auto;
+    }
+
+    .headers {
+       display: flex;
+       justify-content: space-around;
+    }
+
     </style>
 
 </head>
 <body>
-<h1>Ship Locations!</h1>
 
 <div id="players">
 
 </div>
 
-<div id="grid">
+<div class="headers">
+    <h2>Ship Locations</h2>
+    <h2>Salvos Locations</h2>
 </div>
+
+<div class="container">
+
+    <div id="shipsGrid">
+    </div>
+
+    <div id="salvosGrid">
+    </div>
+
+</div>
+
 
 <script src="game.js"></script>
 

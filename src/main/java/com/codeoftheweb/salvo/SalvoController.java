@@ -75,8 +75,14 @@ public class SalvoController {
                 Map<String, Object> playerObj = new HashMap<String, Object>();
                 playerObj.put("id", playerId);
                 playerObj.put("email", playerEmail);
-                gamePlayerObj.put("player", playerObj);
 
+                try {
+                    playerObj.put("score", gp.getScore().getScore());
+                } catch (NullPointerException e) {
+
+                }
+
+                gamePlayerObj.put("player", playerObj);
                 gamePlayerList.add(gamePlayerObj);
 
             }
@@ -102,69 +108,83 @@ public class SalvoController {
     @RequestMapping("/api/game_view/{gamePlayerId}")
     public Object findGamePlayer(@PathVariable Long gamePlayerId) {
 
-        Map<String, Object> obj = new HashMap<String, Object>();
+        GameViewDTO dto = new GameViewDTO();
+
         GamePlayer gamePlayer = gamePlayerRepository.findOne(gamePlayerId);
         Game game = gamePlayer.getGame();
-        obj.put("id", game.getId());
-        obj.put("created", game.getDate());
 
-        // gamePlayers
-        ArrayList<Object> gpArr = new ArrayList<Object>();
-        ArrayList<Object> shipArr = new ArrayList<Object>();
-        ArrayList<Object> salvoArr = new ArrayList<Object>();
+        dto.setId(game.getId());
+        dto.setCreated(game.getDate());
 
         Set<GamePlayer> gamePlayers = game.getGamePlayers();
         for(GamePlayer gp: gamePlayers) {
-            Player player = gp.getPlayer();
-
-            // create gamePlayer obj
-            Map<String, Object> gpObj = new HashMap<String, Object>();
-            Map<String, Object> playerObj = new HashMap<String, Object>();
-            playerObj.put("id", player.getId());
-            playerObj.put("email", player.getEmail());
-            gpObj.put("id", gp.getId());
-            gpObj.put("player", playerObj);
-
-            gpArr.add(gpObj);
-
-            // create ship obj
-            for(Ship s: gp.getShips()) {
-                Map<String, Object> shipObj = new HashMap<String, Object>();
-                shipObj.put("type", s.getType());
-                shipObj.put("locations", s.getLocations());
-                shipArr.add(shipObj);
-            }
-
-
-            //create salvo
-
-//        [
-//            { "turn": "1", "player": "23", "locations": ["H1", "A2"] },
-//            { "turn": "1", "player": "54", "locations": ["C5", "E6"] },
-//            { "turn": "2", "player": "23", "locations": ["B4", "D8"] },
-//            { "turn": "2", "player": "54", "locations": ["A7", "F1"] }
-//        ]
-
-//          create Array
-
-
-            Map<String, Object> salvoObj = new HashMap<String, Object>();
-
-
-            for(Salvo s : gp.getSalvos()) {
-                salvoObj.put("turn", s.getTurnNum());
-                salvoObj.put("player", gamePlayerId);
-                salvoObj.put("locations", s.getLocations());
-            }
-            salvoArr.add(salvoObj);
-
+            // create player obj
+            dto.addGamePlayer(gp);
+            // create ship Array
+            dto.addShip(gp);
+            // create salvo Array
+            dto.addSalvo(gp);
         }
-        obj.put("gamePlayers", gpArr);
-        obj.put("ships", shipArr);
-        obj.put("salvoes", salvoArr);
 
-        return obj;
+        return dto;
 
-    }
 
+
+
+//        obj.put("gamePlayers", gpArr);
+//        obj.put("ships", shipArr);
+//        obj.put("salvos", salvoArr);
+//
+//        Map<String, Object> obj = new HashMap<String, Object>();
+//        GamePlayer gamePlayer = gamePlayerRepository.findOne(gamePlayerId);
+//        Game game = gamePlayer.getGame();
+//        obj.put("id", game.getId());
+//        obj.put("created", game.getDate());
+//
+//        ArrayList<Object> gpArr = new ArrayList<Object>();
+//        ArrayList<Object> shipArr = new ArrayList<Object>();
+//        ArrayList<Object> salvoArr = new ArrayList<Object>();
+//
+//        Set<GamePlayer> gamePlayers = game.getGamePlayers();
+//        for(GamePlayer gp: gamePlayers) {
+//
+//            // create player obj
+//            Map<String, Object> playerObj = new HashMap<String, Object>();
+//            Player player = gp.getPlayer();
+//            playerObj.put("id", player.getId());
+//            playerObj.put("email", player.getEmail());
+//
+//            // create gamePlayer obj
+//            Map<String, Object> gpObj = new HashMap<String, Object>();
+//            gpObj.put("id", gp.getId());
+//            gpObj.put("player", playerObj);
+//
+//            // push to gamePlayer Array
+//            gpArr.add(gpObj);
+//
+//            // create ship Array
+//            for (Ship s : gp.getShips()) {
+//                Map<String, Object> shipObj = new HashMap<String, Object>();
+//                shipObj.put("type", s.getType());
+//                shipObj.put("locations", s.getLocations());
+//                shipArr.add(shipObj);
+//            }
+//
+//            // create salvo Array
+//            for(Salvo sa: gp.getSalvos()) {
+//                Map<String, Object> salvoObj = new HashMap<String, Object>();
+//                salvoObj.put("turn", sa.getTurnNum());
+//                salvoObj.put("locations", sa.getLocations());
+//                salvoObj.put("player", gp.getPlayer().getId());
+//                salvoArr.add(salvoObj);
+//            }
+//
+//        }
+//
+//        obj.put("gamePlayers", gpArr);
+//        obj.put("ships", shipArr);
+//        obj.put("salvos", salvoArr);
+//        return obj;
+//
+  }
 }
