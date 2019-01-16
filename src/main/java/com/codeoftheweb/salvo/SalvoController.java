@@ -111,6 +111,7 @@ public class SalvoController {
         // gamePlayers
         ArrayList<Object> gpArr = new ArrayList<Object>();
         ArrayList<Object> shipArr = new ArrayList<Object>();
+        ArrayList<Object> salvoArr = new ArrayList<Object>();
 
         Set<GamePlayer> gamePlayers = game.getGamePlayers();
         for(GamePlayer gp: gamePlayers) {
@@ -134,11 +135,36 @@ public class SalvoController {
                 shipArr.add(shipObj);
             }
 
+
+            //create salvo
+
+//        [
+//            { "turn": "1", "player": "23", "locations": ["H1", "A2"] },
+//            { "turn": "1", "player": "54", "locations": ["C5", "E6"] },
+//            { "turn": "2", "player": "23", "locations": ["B4", "D8"] },
+//            { "turn": "2", "player": "54", "locations": ["A7", "F1"] }
+//        ]
+
+//          create Array
+
+
+            Map<String, Object> salvoObj = new HashMap<String, Object>();
+
+
+            for(Salvo s : gp.getSalvos()) {
+                salvoObj.put("turn", s.getTurnNum());
+                salvoObj.put("player", gamePlayerId);
+                salvoObj.put("locations", s.getLocations());
+            }
+            salvoArr.add(salvoObj);
+
         }
         obj.put("gamePlayers", gpArr);
         obj.put("ships", shipArr);
+        obj.put("salvoes", salvoArr);
 
         return obj;
+
     }
 
 }

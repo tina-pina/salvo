@@ -24,7 +24,24 @@ let url = (`/api/game_view/${gamePlayerId}`)
 
 fetch(url).then(res => res.json())
 .then(json => {
+    let playerEmailArr = [];
     let shipsArr = json.ships;
+    let gamePlayers = json.gamePlayers;
+    for(let player of gamePlayers) {
+//        console.log(player.player.email);
+        if(!playerEmailArr.includes(player.player.email)) {
+           playerEmailArr.push(player.player.email);
+        }
+    }
+//    console.log(playerEmailArr);
+
+    for(let item of playerEmailArr) {
+        console.log(item);
+        let players = document.getElementById("players");
+        let p = document.createElement("p");
+        p.innerHTML = item;
+        players.appendChild(p);
+    }
 
     let shipLocations = []
     for(let ship of shipsArr) {
