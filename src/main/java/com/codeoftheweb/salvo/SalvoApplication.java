@@ -83,14 +83,24 @@ public class SalvoApplication {
       salvoRepo.save(Sa3);
       salvoRepo.save(Sa4);
 
-      Score Sc1 = new Score(g1, p1, 2.5, new Date());
-      Score Sc2 = new Score(g1, p2, 4.5, new Date());
-      Score Sc3 = new Score(g2, p1, 5.5, new Date());
-      Score Sc4 = new Score(g2, p2, 1.5, new Date());
+
+//      scores player:
+//      lose: 0 points;
+//      tie: 0.5 points;
+//      win: 1 point;
+
+      Score Sc1 = new Score(g1, p1, 0.5, new Date());
+      Score Sc2 = new Score(g1, p2, 0.5, new Date());
+
+      Score Sc3 = new Score(g2, p2, 0, new Date());
+      Score Sc4 = new Score(g2, p3, 1, new Date());
+      Score Sc5 = new Score(g2, p4, 0, new Date());
+
       scoreRepo.save(Sc1);
       scoreRepo.save(Sc2);
       scoreRepo.save(Sc3);
       scoreRepo.save(Sc4);
+      scoreRepo.save(Sc5);
 
 		};
 	}
