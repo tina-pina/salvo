@@ -30,7 +30,7 @@ public class SalvoController {
 //        return gameRepo.findAll();
 //    }
 
-        @RequestMapping("/api/games")
+    @RequestMapping("/api/games")
     public List<Map<String, Object>> getAllGames() {
 
         // empty array [] // {"", ...}
@@ -115,6 +115,8 @@ public class SalvoController {
         dto.setCreated(game.getDate());
 
         Set<GamePlayer> gamePlayers = game.getGamePlayers();
+
+        //here we get several game players (and their locations) for our salvo array
         for(GamePlayer gp: gamePlayers) {
             // create player obj
             dto.addGamePlayer(gp);

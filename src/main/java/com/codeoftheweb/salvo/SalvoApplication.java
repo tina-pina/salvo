@@ -27,10 +27,10 @@ public class SalvoApplication {
                                               ScoreRepository scoreRepo) {
 		return (args) -> {
 
-      Player p1 = new Player("", "", "j.bauer@ctu.gov"); // playing game 1
-      Player p2 = new Player("", "", "c.obrian@ctu.gov"); // playing game 1,2
-      Player p3 = new Player("", "", "t.almeida@ctu.gov"); // playing game 2
-      Player p4 = new Player("", "", "d.palmer@whitehouse.gov"); // playing game 2
+      Player p1 = new Player("", "", "j.bauer@ctu.gov", "24"); // playing game 1
+      Player p2 = new Player("", "", "c.obrian@ctu.gov", "42" ); // playing game 1,2
+      Player p3 = new Player("", "", "t.almeida@ctu.gov", "kb"); // playing game 2
+      Player p4 = new Player("", "", "d.palmer@whitehouse.gov", "mole"); // playing game 2
       playerRepo.save(p1);
 			playerRepo.save(p2);
 			playerRepo.save(p3);
