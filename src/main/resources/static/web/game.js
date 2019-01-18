@@ -19,8 +19,11 @@ function paramObj(search) {
 
 //get the game player id from the sites url
 
+
+//http://localhost:8080/api/game_view/
+
 let gamePlayerId = paramObj(location.href);
-// console.log(gamePlayerId)
+ console.log(gamePlayerId)
 
 let url = (`/api/game_view/${gamePlayerId}`)
 

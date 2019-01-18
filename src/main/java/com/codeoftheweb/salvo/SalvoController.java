@@ -65,7 +65,7 @@ public class SalvoController {
                 long gamePlayerId = gp.getId();
                 Player p = gp.getPlayer();
                 long playerId = p.getId();
-                String playerEmail = p.getEmail();
+                String playerEmail = p.getUserName();
 
                 Map<String, Object> gamePlayerObj = new HashMap<String, Object>();
                 gamePlayerObj.put("id", gamePlayerId);
@@ -127,64 +127,16 @@ public class SalvoController {
         }
 
         return dto;
+    }
 
+//    @RequestMapping("/api/login")
+//    public Object login() {
+//        return "login";
+//    }
+//
+//    @RequestMapping("/api/logout")
+//    public Object logout() {
+//        return "logout";
+//    }
 
-
-
-//        obj.put("gamePlayers", gpArr);
-//        obj.put("ships", shipArr);
-//        obj.put("salvos", salvoArr);
-//
-//        Map<String, Object> obj = new HashMap<String, Object>();
-//        GamePlayer gamePlayer = gamePlayerRepository.findOne(gamePlayerId);
-//        Game game = gamePlayer.getGame();
-//        obj.put("id", game.getId());
-//        obj.put("created", game.getDate());
-//
-//        ArrayList<Object> gpArr = new ArrayList<Object>();
-//        ArrayList<Object> shipArr = new ArrayList<Object>();
-//        ArrayList<Object> salvoArr = new ArrayList<Object>();
-//
-//        Set<GamePlayer> gamePlayers = game.getGamePlayers();
-//        for(GamePlayer gp: gamePlayers) {
-//
-//            // create player obj
-//            Map<String, Object> playerObj = new HashMap<String, Object>();
-//            Player player = gp.getPlayer();
-//            playerObj.put("id", player.getId());
-//            playerObj.put("email", player.getEmail());
-//
-//            // create gamePlayer obj
-//            Map<String, Object> gpObj = new HashMap<String, Object>();
-//            gpObj.put("id", gp.getId());
-//            gpObj.put("player", playerObj);
-//
-//            // push to gamePlayer Array
-//            gpArr.add(gpObj);
-//
-//            // create ship Array
-//            for (Ship s : gp.getShips()) {
-//                Map<String, Object> shipObj = new HashMap<String, Object>();
-//                shipObj.put("type", s.getType());
-//                shipObj.put("locations", s.getLocations());
-//                shipArr.add(shipObj);
-//            }
-//
-//            // create salvo Array
-//            for(Salvo sa: gp.getSalvos()) {
-//                Map<String, Object> salvoObj = new HashMap<String, Object>();
-//                salvoObj.put("turn", sa.getTurnNum());
-//                salvoObj.put("locations", sa.getLocations());
-//                salvoObj.put("player", gp.getPlayer().getId());
-//                salvoArr.add(salvoObj);
-//            }
-//
-//        }
-//
-//        obj.put("gamePlayers", gpArr);
-//        obj.put("ships", shipArr);
-//        obj.put("salvos", salvoArr);
-//        return obj;
-//
-  }
 }

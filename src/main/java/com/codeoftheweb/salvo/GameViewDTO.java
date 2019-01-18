@@ -82,7 +82,7 @@ public class GameViewDTO {
     Map<String, Object> playerObj = new HashMap<String, Object>();
     Player player = gp.getPlayer();
     playerObj.put("id", player.getId());
-    playerObj.put("email", player.getEmail());
+    playerObj.put("email", player.getUserName());
     gpObj.put("player", playerObj);
     this.gamePlayers.add(gpObj);
   }
