@@ -158,10 +158,10 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         .antMatchers(
           "/web/**",
-          "/api/player",
+//          "/api/player",
           "/api/players",
-          "/api/games",
-          "/api/game_view/**",
+//          "/api/games",
+//          "/api/game_view/**",
           "/api/login",
           "/api/logout"
         ).permitAll()

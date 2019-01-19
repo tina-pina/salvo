@@ -3,11 +3,11 @@ package com.codeoftheweb.salvo;
 import com.codeoftheweb.salvo.dto.GameDTO;
 import com.codeoftheweb.salvo.dto.PlayerInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -95,12 +95,33 @@ public class SalvoController {
 
     }
 
-    @RequestMapping("/api/players")
-    public List<Long> getAllPlayers() {
-        List<Player> players = playerRepo.findAll();
-        List<Long> idList = new ArrayList<Long>();
-        for(Player p : players) idList.add(p.getId());
-        return idList;
+//    @RequestMapping("/api/players")
+//    public List<Long> getAllPlayers() {
+//        List<Player> players = playerRepo.findAll();
+//        List<Long> idList = new ArrayList<Long>();
+//        for(Player p : players) idList.add(p.getId());
+//        return idList;
+//    }
+
+    @RequestMapping(path = "/api/players", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> createPlayer(@RequestBody Map<String, String> payload) {
+        String username = payload.get("username");
+        String password = payload.get("password");
+        if (username.isEmpty()) {
+            return new ResponseEntity<>(makeMap("error", "No name"), HttpStatus.FORBIDDEN);
+        }
+        Player player = playerRepo.findByUsername(username);
+        if (player != null) {
+            return new ResponseEntity<>(makeMap("error", "Username already exists"), HttpStatus.CONFLICT);
+        }
+        Player newPlayer = playerRepo.save(new Player(username, password));
+        return new ResponseEntity<>(makeMap("id", ".getId()"), HttpStatus.CREATED);
+    }
+
+    private Map<String, Object> makeMap(String key, Object value) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(key, value);
+        return map;
     }
 
     @RequestMapping("/api/player")
