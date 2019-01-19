@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 @RepositoryRestResource
 public interface PlayerRepository extends JpaRepository<Player, Long> {
 //List<Player> findByLastName(String lastName);
-    Player findByUserName(@Param("name") String userName);
+    Player findByUsername(@Param("name") String username);
 }
 
 

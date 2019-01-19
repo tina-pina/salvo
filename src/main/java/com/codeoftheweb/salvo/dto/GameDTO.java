@@ -1,4 +1,4 @@
-package com.codeoftheweb.salvo;
+package com.codeoftheweb.salvo.dto;
 
 // {
 //  "id" : 1,
@@ -8,13 +8,18 @@ package com.codeoftheweb.salvo;
 //  "salvoes": ...
 // }
 
+import com.codeoftheweb.salvo.GamePlayer;
+import com.codeoftheweb.salvo.Player;
+import com.codeoftheweb.salvo.Salvo;
+import com.codeoftheweb.salvo.Ship;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GameViewDTO {
+public class GameDTO {
 
   private long id;
   private Date created;
@@ -26,13 +31,13 @@ public class GameViewDTO {
     return id;
   }
 
-  public GameViewDTO() {}
+  public GameDTO() {}
 
-  public GameViewDTO(long id,
-                     Date created,
-                     ArrayList<Map<String, Object>> gamePlayers,
-                     ArrayList<Map<String, Object>> ships,
-                     ArrayList<Map<String, Object>> salvos) {
+  public GameDTO(long id,
+                 Date created,
+                 ArrayList<Map<String, Object>> gamePlayers,
+                 ArrayList<Map<String, Object>> ships,
+                 ArrayList<Map<String, Object>> salvos) {
     this.id = id;
     this.created = created;
     this.gamePlayers = gamePlayers;
@@ -77,12 +82,13 @@ public class GameViewDTO {
   }
 
   public void addGamePlayer(GamePlayer gp) {
+    // gamePlayers: [{id: ..., player: {id: ..., email: ...}}]
     Map<String, Object> gpObj = new HashMap<String, Object>();
     gpObj.put("id", gp.getId());
     Map<String, Object> playerObj = new HashMap<String, Object>();
     Player player = gp.getPlayer();
     playerObj.put("id", player.getId());
-    playerObj.put("email", player.getUserName());
+    playerObj.put("email", player.getUsername());
     gpObj.put("player", playerObj);
     this.gamePlayers.add(gpObj);
   }

@@ -130,7 +130,7 @@ class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
   @Override
   public void init(AuthenticationManagerBuilder auth) throws Exception {
     auth.userDetailsService(inputName-> {
-      Player player = playerRepository.findByUserName(inputName);
+      Player player = playerRepository.findByUsername(inputName);
       if (player != null) {
         return new User(player.getUsername(), player.getPassword(),
           AuthorityUtils.createAuthorityList("USER"));
@@ -158,6 +158,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         .antMatchers(
           "/web/**",
+          "/api/player",
           "/api/players",
           "/api/games",
           "/api/game_view/**",

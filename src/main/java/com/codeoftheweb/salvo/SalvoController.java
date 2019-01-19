@@ -1,6 +1,10 @@
 package com.codeoftheweb.salvo;
 
+import com.codeoftheweb.salvo.dto.GameDTO;
+import com.codeoftheweb.salvo.dto.PlayerInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,12 +27,9 @@ public class SalvoController {
     @Autowired
     private ShipRepository shipRepository;
 
-
-
-//    @RequestMapping("/api/games")
-//    public List<Game> getAllGames() {
-//        return gameRepo.findAll();
-//    }
+    private boolean isGuest(Authentication authentication) {
+        return authentication == null || authentication instanceof AnonymousAuthenticationToken;
+    }
 
     @RequestMapping("/api/games")
     public List<Map<String, Object>> getAllGames() {
@@ -65,7 +66,7 @@ public class SalvoController {
                 long gamePlayerId = gp.getId();
                 Player p = gp.getPlayer();
                 long playerId = p.getId();
-                String playerEmail = p.getUserName();
+                String playerEmail = p.getUsername();
 
                 Map<String, Object> gamePlayerObj = new HashMap<String, Object>();
                 gamePlayerObj.put("id", gamePlayerId);
@@ -102,11 +103,58 @@ public class SalvoController {
         return idList;
     }
 
+    @RequestMapping("/api/player")
+    private Object getPlayerInfo (Authentication authentication) {
+        if(isGuest(authentication)) {
+            return "Login First";
+        }
+
+        PlayerInfoDTO dto = new PlayerInfoDTO();
+
+        String username = authentication.getName();
+        Player player = playerRepo.findByUsername(username);
+
+        // Create player
+        HashMap<String, String> playerObj = new HashMap<String, String>();
+        playerObj.put("id", Long.toString(player.getId()));
+        playerObj.put("name", username);
+        dto.setPlayer(playerObj);
+
+        // Create games
+        List<GameDTO> gamesList = new ArrayList<GameDTO>();
+        Set<GamePlayer> gamePlayers = player.getGamePlayers();
+
+        // Get all games played by the current player
+        for(GamePlayer gp: gamePlayers) {
+
+            GameDTO gameDto = new GameDTO();
+            Game game = gp.getGame();
+
+            // get id
+            int gameId = game.getId();
+            gameDto.setId(gameId);
+            //get date
+            Date date = game.getDate();
+            gameDto.setCreated(date);
+
+            // For each Game, get players, ships, salvos
+            Set<GamePlayer> gameGamePlayers = game.getGamePlayers();
+            for(GamePlayer ggp: gameGamePlayers) {
+                gameDto.addGamePlayer(ggp);
+                gameDto.addSalvo(ggp);
+                gameDto.addShip(ggp);
+            }
+            gamesList.add(gameDto);
+        }
+
+        dto.setGames(gamesList);
+        return dto;
+    }
 
     @RequestMapping("/api/game_view/{gamePlayerId}")
-    public Object findGamePlayer(@PathVariable Long gamePlayerId) {
+    public Object getGameView(@PathVariable Long gamePlayerId) {
 
-        GameViewDTO dto = new GameViewDTO();
+        GameDTO dto = new GameDTO();
 
         GamePlayer gamePlayer = gamePlayerRepository.findOne(gamePlayerId);
         Game game = gamePlayer.getGame();
@@ -128,15 +176,5 @@ public class SalvoController {
 
         return dto;
     }
-
-//    @RequestMapping("/api/login")
-//    public Object login() {
-//        return "login";
-//    }
-//
-//    @RequestMapping("/api/logout")
-//    public Object logout() {
-//        return "logout";
-//    }
 
 }
