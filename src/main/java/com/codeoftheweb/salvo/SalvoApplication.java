@@ -158,15 +158,16 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         .antMatchers(
           "/web/**",
-//          "/api/player",
           "/api/players",
-//          "/api/games",
-//          "/api/game_view/**",
+          "/api/games",
           "/api/login",
-          "/api/logout"
+          "/api/logout",
+          "/api/sign-up"
         ).permitAll()
         //.antMatchers("/rest/**").hasAuthority("ADMIN")
-        .antMatchers("/api/**", "/rest/**").hasAuthority("USER");
+        .antMatchers(
+          "/api/**",
+          "/rest/**").hasAuthority("USER");
 
 
       http.formLogin()

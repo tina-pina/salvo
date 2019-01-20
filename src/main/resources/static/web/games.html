@@ -1,18 +1,38 @@
 <!DOCTYPE HTML>
 <html>
-<head> <title>Salvo!</title> </head>
-<body>
-<h1>Lets play!</h1>
+    <head>
+        <title>Salvo!</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+              crossorigin="anonymous" />
+    </head>
+    <body>
+        <h1>Lets play!</h1>
 
+        <div id="body"></div>
 
+        <form id="login-form" action="#">
+            <label>Email: <input id="username-form" type="email" value="j.bauer@ctu.gov" required></label>
+            <label>Password: <input id="password-form" type="password" value="24" required></label>
+            <button id="submit-btn-login">login</button>
+            <button id="submit-btn-signup">sign-up</button>
+        </form>
 
-<div id="body">
+        <form id="logout-form" action="#">
+            <button id="submit-btn-logout">logout</button>
+        </form>
 
-
-</div>
-
-
-<script src="games.js"></script>
-
-</body>
+        <div id="login-alert-success" class="alert alert-primary" role="alert">
+            login successfull!
+        </div>
+        <div id="login-alert-fail" class="alert alert-primary" role="alert">
+            Hello Guest, please sign-up or log-in :)
+        </div>
+    </body>
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <script src="games.js"></script>
 </html>

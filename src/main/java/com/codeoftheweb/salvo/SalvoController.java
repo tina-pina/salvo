@@ -115,7 +115,7 @@ public class SalvoController {
             return new ResponseEntity<>(makeMap("error", "Username already exists"), HttpStatus.CONFLICT);
         }
         Player newPlayer = playerRepo.save(new Player(username, password));
-        return new ResponseEntity<>(makeMap("id", ".getId()"), HttpStatus.CREATED);
+        return new ResponseEntity<>(makeMap("id", newPlayer.getId()), HttpStatus.CREATED);
     }
 
     private Map<String, Object> makeMap(String key, Object value) {
