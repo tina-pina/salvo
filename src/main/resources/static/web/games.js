@@ -1,14 +1,99 @@
+
+
+
+
+
+function paramObj(search) {
+  var obj = {};
+  var keyRes = " ";
+  var reg = /(?:[?&]([^?&#=]+)(?:=([^&#]*))?)(?:#.*)?/g;
+
+  search.replace(reg, function(match, param, val) {
+    obj[decodeURIComponent(param)] = val === undefined ? "" : decodeURIComponent(val);
+  });
+
+  for(let key in obj) {
+    keyRes += obj.gp
+  }
+
+  return keyRes;
+}
+
+
+
 function displayBoard() {
-    let url = '/api/games';
-    fetch(url).then(response => response.json()).then(function(gameArr) {
 
-        console.log("this is games", gameArr)
+//before login in we fetch data
 
-        let leaderBoardStats = createLeaderBoardStats(gameArr);
+//i changed from here
 
-        createTable(leaderBoardStats)
+let gamePlayerIdWindow = paramObj(location.href);
 
-    });
+
+            let url = '/api/games';
+                fetch(url).then(response => response.json()).then(function(gameArr) {
+
+                    let gamePlayerIdArr = [];
+
+                    for( gameObj of gameArr) {
+                        let gamePlayersArr = gameObj.gamePlayers
+                        console.log(gamePlayersArr);
+                        for(let gamePlayerId of gamePlayersArr) {
+                            console.log(gamePlayerId.id);
+                            gamePlayerIdArr.push(gamePlayerId.id);
+                        }
+                    }
+                    console.log(gamePlayerIdArr);
+
+                    for(let singleId of gamePlayerIdArr) {
+                        if(singleId === gamePlayerIdWindow) {
+
+                            let url = (`/api/games/${gamePlayerId}`)
+
+                            displayBoard();
+
+                            fetch(url).then(response => response.json()).then(function(gameArr) {
+
+                                let leaderBoardStats = createLeaderBoardStats(gameArr);
+
+                                createTable(leaderBoardStats)
+
+                            });
+                        }
+                        else {
+
+                            let url = '/api/games';
+                                fetch(url).then(response => response.json()).then(function(gameArr) {
+
+                                    console.log("this is games", gameArr)
+
+                                    let leaderBoardStats = createLeaderBoardStats(gameArr);
+
+                                    createTable(leaderBoardStats)
+
+                             });
+
+                        }
+                    }
+            });
+
+
+
+//i changed to here and i uncommented this down
+
+
+
+//    let url = '/api/games';
+//    fetch(url).then(response => response.json()).then(function(gameArr) {
+//
+//        console.log("this is games", gameArr)
+//
+//        let leaderBoardStats = createLeaderBoardStats(gameArr);
+//
+//        createTable(leaderBoardStats)
+//
+//    });
+
 
     let createLeaderBoardStats = gameArr => {
 
@@ -106,7 +191,7 @@ function updateUserForm() {
     fetch("/api/player")
     .then(response => response.json())
     .then(function(json) {
-        console.log(json)
+        console.log("this is players", json)
         if(json.status === 401) {
             console.log("user NOT logged-in")
             // hide logout form
@@ -116,8 +201,50 @@ function updateUserForm() {
             alertFail.style.visibility = "visible"
         }
         else {
+
+        //user will be directed to his own game
             console.log("user logged-in")
+
+//            let gamePlayerIdWindow = paramObj(location.href);
+//
+//
+//            let url = '/api/games';
+//                fetch(url).then(response => response.json()).then(function(gameArr) {
+//
+//                    let gamePlayerIdArr = [];
+//
+//                    for(let gameObj of gameArr) {
+//                        let gamePlayersArr = gameObj.gamePlayers
+//                        console.log(gamePlayersArr);
+//                        for(let gamePlayerId of gamePlayersArr) {
+//                            console.log(gamePlayerId.id);
+//                            gamePlayerIdArr.push(gamePlayerId.id);
+//                        }
+//                    }
+//                    console.log(gamePlayerIdArr);
+//
+//                    for(let singleId of gamePlayerIdArr) {
+//                        if(singleId === gamePlayerIdWindow) {
+//
+//                            let url = (`/api/games/${gamePlayerId}`)
+//
+//                            displayBoard();
+//
+//                            fetch(url).then(response => response.json()).then(function(gameArr) {
+//
+//                                let leaderBoardStats = createLeaderBoardStats(gameArr);
+//
+//                                createTable(leaderBoardStats)
+//
+//                            });
+//                        }
+//                    }
+//            });
+
+
+            //login styles
             // hide login form
+
             loginForm.style.visibility = "hidden"
             logoutForm.style.visibility = "visible"
             alertSuccess.style.visibility = "visible"
