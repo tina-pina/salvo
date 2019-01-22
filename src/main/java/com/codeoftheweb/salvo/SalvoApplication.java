@@ -32,6 +32,7 @@ public class SalvoApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SalvoApplication.class, args);
+
 	}
 
 	@Bean
@@ -158,7 +159,6 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         .antMatchers(
           "/web/**",
-          "/api/players",
           "/api/games",
           "/api/login",
           "/api/logout",
@@ -166,7 +166,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         ).permitAll()
         //.antMatchers("/rest/**").hasAuthority("ADMIN")
         .antMatchers(
-          "/api/**",
+          "/api/**", "/api/game_view/**",
           "/rest/**").hasAuthority("USER");
 
 

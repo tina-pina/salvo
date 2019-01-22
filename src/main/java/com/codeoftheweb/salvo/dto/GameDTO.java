@@ -87,10 +87,6 @@ public class GameDTO {
     gpObj.put("id", gp.getId());
     Map<String, Object> playerObj = new HashMap<String, Object>();
     Player player = gp.getPlayer();
-
-    //add game player id and restructure the json (have games in the front)
-//    playerObj.put("gp-id", gp.getId());
-
     playerObj.put("id", player.getId());
     playerObj.put("email", player.getUsername());
     gpObj.put("player", playerObj);
@@ -115,6 +111,4 @@ public class GameDTO {
       this.salvos.add(salvoObj);
     }
   }
-
-
 }

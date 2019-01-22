@@ -146,7 +146,6 @@ updateGrids();
 
 
 
-
 document.getElementById("submit-btn-logout").addEventListener("click", function(e){
 
     e.preventDefault();

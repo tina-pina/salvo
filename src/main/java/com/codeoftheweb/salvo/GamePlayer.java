@@ -19,6 +19,10 @@ public class GamePlayer {
     @JoinColumn(name="player_id")
     private Player player;
 
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name="player_name")
+//    private Player player;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="game_id")
     private Game game;
@@ -42,6 +46,7 @@ public class GamePlayer {
     public long getId() { return id; }
 
     public Player getPlayer() { return player; }
+
 
     public Game getGame() { return game; }
 
