@@ -55,19 +55,24 @@ public class SalvoApplication {
 
       Game g1 = new Game(new Date()); // played by player 1,2
       Game g2 = new Game(new Date()); // played by player 2,3,4
+      Game g3 = new Game(new Date()); // played by player 4
       gameRepo.save(g1);
 			gameRepo.save(g2);
+			gameRepo.save(g3);
+
 
       GamePlayer GP1 = new GamePlayer(g1, p1); // has 5 ships, has 2 salvos
       GamePlayer GP2 = new GamePlayer(g1, p2); // has 0 ship, has 2 salvos
       GamePlayer GP3 = new GamePlayer(g2, p2); // has 5 ships,
       GamePlayer GP4 = new GamePlayer(g2, p3); // has 0 ship
       GamePlayer GP5 = new GamePlayer(g2, p4); // has 0 ship
+      GamePlayer GP6 = new GamePlayer(g3, p4); // has 0 ship
       gamePlayerRepo.save(GP1);
       gamePlayerRepo.save(GP2);
       gamePlayerRepo.save(GP3);
       gamePlayerRepo.save(GP4);
       gamePlayerRepo.save(GP5);
+      gamePlayerRepo.save(GP6);
 
       Ship S1 = new Ship("Aircraft Carrier", new ArrayList<String>(asList("B5", "B6", "B7", "B8", "B9")), GP1);
 			Ship S2 = new Ship("Battleship", new ArrayList<String>(asList("D4", "D5", "D6", "D7")) , GP1);
@@ -162,11 +167,14 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
           "/api/games",
           "/api/login",
           "/api/logout",
+          "/api/players",
           "/api/sign-up"
         ).permitAll()
         //.antMatchers("/rest/**").hasAuthority("ADMIN")
         .antMatchers(
-          "/api/**", "/api/game_view/**",
+          "/api/**",
+          "/api/game_view/**",
+          "/api/game/**", "/api/games/players/**",
           "/rest/**").hasAuthority("USER");
 
 

@@ -98,6 +98,44 @@ function updateGrids() {
 
 }
 
+//
+//const testRequest = async () => {
+//    let gamePlayerId = paramObj(location.href);
+//    const response = await fetch(`/api/games/players/${gamePlayerId}/ships`, {
+//          headers: {
+//            'Accept': 'application/json',
+//            'Content-Type': 'application/json'
+//          },
+//          method: "POST",
+//          body: JSON.stringify(
+//           [{ "type": "destroyer", "locations": ["A1", "B1", "C1"]},
+//             { "type": "patrol boat", "locations": ["H6", "H7"] },
+//             { "type": "Aircraft Carrier", "locations": ["J1", "J2", "J3", "J4", "J5"]}
+//           ]
+//          )
+//    });
+//    const json = await response.json();
+//    console.log(json);
+//}
+
+
+//function createShips(gamePlayerId, shipArr) {
+//
+//    let gamePlayerId = paramObj(location.href);
+//    const response = await fetch(`/api/games/players/${gamePlayerId}/ships`, {
+//          headers: {
+//            'Accept': 'application/json',
+//            'Content-Type': 'application/json'
+//          },
+//          method: "POST",
+//          body: JSON.stringify(shipArr)
+//    });
+//    const json = await response.json();
+//    console.log(json);
+//
+//}
+
+
 
 function createGrids() {
 
@@ -158,7 +196,12 @@ document.getElementById("submit-btn-logout").addEventListener("click", function(
 })
 
 
-
+//$( "#testDrag" ).draggable();
+//$( "#B3" ).droppable({
+//  drop: function( event, ui ) {
+//    console.log('dropeed')
+//  }
+//});
 
 
 

@@ -13,7 +13,7 @@ public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
-    private int id;
+    private long id;
 
     @OneToMany(mappedBy="game", fetch= FetchType.EAGER)
     Set<GamePlayer> gamePlayers;
@@ -33,7 +33,7 @@ public class Game {
         return this.date;
     }
 
-    public int getId() {
+    public long getId() {
         return this.id;
     }
 

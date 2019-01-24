@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Arrays.asList;
+
 
 @RestController
 public class SalvoController {
@@ -164,6 +166,9 @@ public class SalvoController {
         return map;
     }
 
+
+    //return all ids of GamePlayer which are played by player --> gp id by current player
+
     @RequestMapping("/api/player/playerGameIds")
     private Object getAllGPIDs(Authentication authentication) {
         Map<String, Object> obj = new HashMap<>();
@@ -203,7 +208,7 @@ public class SalvoController {
             Game game = gp.getGame();
 
             // get id
-            int gameId = game.getId();
+            long gameId = game.getId();
             gameDto.setId(gameId);
             //get date
             Date date = game.getDate();
@@ -271,7 +276,7 @@ public class SalvoController {
         }
         else {
 
-            Game game = gameRepo.findOne(gameId);
+            Game game = gameRepo.getOne(gameId);
             if(game == null) {
                 return new ResponseEntity<String>("forbidden", HttpStatus.FORBIDDEN);
             }
@@ -296,4 +301,48 @@ public class SalvoController {
 
     }
 
+    @RequestMapping(value="/api/games/players/{gamePlayerId}/ships", method=RequestMethod.POST)
+    //body of the request should be parsed into a list of ships
+    //Use ResponseEntity<Map<String,Object>> if you are returning a map for an JSON object
+    public ResponseEntity<Map<String,Object>> addShips (@PathVariable Long gamePlayerId, @RequestBody List<Ship> ships, Authentication authentication) {
+        //1. An Unauthorized response should be sent if there is no current user logged in
+        String curUsername = playerRepo.findByUsername(authentication.getName()).getUsername();
+        Player currentUsername = playerRepo.findByUsername(curUsername);
+        if (currentUsername == null) {
+            return new ResponseEntity<>(makeMap("error", "User not logged in"), HttpStatus.UNAUTHORIZED);
+        }
+        //2. there is no game player with the given ID
+        GamePlayer currentPlayer = gamePlayerRepository.findOne(gamePlayerId);
+        if (currentPlayer == null) {
+            return new ResponseEntity<>(makeMap("error", "game player with this id doesn't exist"), HttpStatus.UNAUTHORIZED);
+        }
+        //3. the current user is not the game player the ID references
+        String currentPlayerName = currentPlayer.getPlayer().getUsername();
+        if (currentPlayerName != currentUsername.getUsername()) {
+            return new ResponseEntity<>(makeMap("error", "game player with this id doesn't exist"), HttpStatus.UNAUTHORIZED);
+        }
+        //4. A Forbidden response should be sent if the user already has ships placed
+        Set currentPlayerShips =  currentPlayer.getShips();
+        if(currentPlayerShips.size() != 0) {
+            return new ResponseEntity<>(makeMap("error", "game player with this id doesn't exist"), HttpStatus.FORBIDDEN);
+        }
+
+        else {
+            for(Ship s: ships) {
+
+//                List shipsL = Arrays.asList(s.getLocations());
+                ArrayList<String> shipLocations = new ArrayList<String>(s.getLocations());
+
+                shipRepository.save(new Ship(s.getType(), shipLocations, s.getGamePlayer()));
+            }
+            return new ResponseEntity<>(makeMap("success", "ships are created"), HttpStatus.CREATED);
+
+        }
+
+    }
+
+
 }
+
+
+

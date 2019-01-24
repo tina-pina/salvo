@@ -26,6 +26,7 @@ public class Ship {
 
     public Ship() { }
 
+
     public Ship(String type, ArrayList<String> locations, GamePlayer gamePlayer) {
         this.type = type;
         this.locations = locations;
@@ -42,6 +43,22 @@ public class Ship {
 
     public  String getType() {
         return type;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setGamePlayer(GamePlayer gamePlayer) {
+        this.gamePlayer = gamePlayer;
+    }
+
+    public void setLocations(List<String> locations) {
+        this.locations = locations;
     }
 
 }

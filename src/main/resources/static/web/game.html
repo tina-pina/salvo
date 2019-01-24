@@ -35,6 +35,26 @@
        justify-content: center;
     }
 
+   #shipOptions td {
+       background-color: blue;
+       width: 20px;
+       height: 20px;
+   }
+
+   td.shipName {
+       background-color: white;
+       width: 120px;
+       height: 20px;
+       margin: 10px;
+       border: none;
+   }
+
+   #shipOptions table {
+      margin: 10px;
+   }
+
+
+
     </style>
 
 </head>
@@ -58,15 +78,53 @@
 
 </div>
 
+<div id="shipOptions">
+    <h1>Available ships</h1>
+    <table>
+        <!--<td class="shipName">Patrol Boat</td>-->
+        <td></td>
+        <td></td>
+    </table>
+    <table>
+        <!--<td class="shipName">Submarine</td>-->
+        <td></td>
+        <td></td>
+        <td></td>
+    </table>
+    <table>
+        <!--<td class="shipName">Battleship</td>-->
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </table>
+    <table>
+        <!--<td class="shipName">Aircraft Carrier</td>-->
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </table>
+
+
+
+</div>
+
 <form id="logout-form" action="#">
     <button id="submit-btn-logout">logout</button>
 </form>
+
+
 
 <script
         src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
-
+<!--<script-->
+        <!--src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"-->
+        <!--integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="-->
+        <!--crossorigin="anonymous"></script>-->
 
 <script src="game.js"></script>
 
