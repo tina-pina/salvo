@@ -5,22 +5,27 @@
 
     table {
       font-family: arial, sans-serif;
-      border-collapse: collapse;
-      <!--width: 80%;-->
-      <!--margin: 0 auto;-->
+      <!--border-collapse: collapse;-->
+      table-layout: fixed;
     }
 
     #shipsGrid, #salvosGrid {
         margin: 0 auto;
+        z-index: -1;
+        border-collapse: collapse;
+        width: fit-content;
+
     }
 
     td, th {
+
       border: 1px solid #dddddd;
       text-align: left;
-      padding: 8px;
-      width: 25px;
-      height: 25px;
+      padding: 5px;
+      width: 15px;
+      height: 20px;
       text-align: center;
+      z-index: -1;
     }
 
     .container {
@@ -35,25 +40,109 @@
        justify-content: center;
     }
 
-   #shipOptions td {
-       background-color: blue;
-       width: 20px;
-       height: 20px;
-   }
-
-   td.shipName {
-       background-color: white;
-       width: 120px;
-       height: 20px;
+   #dragP {
+       width: 50px;
+       height: 31px;
        margin: 10px;
        border: none;
+       background-color: blue;
+       z-index: 2;
+       object-fit: cover;
    }
 
-   #shipOptions table {
-      margin: 10px;
+   #dragS {
+       width: 70px;
+       height: 31px;
+       margin: 10px;
+       border: none;
+       background-color: blue;
+       z-index: 2;
+       object-fit: cover;
+
+   }
+
+   #dragD {
+       width: 70px;
+       height: 31px;
+       margin: 10px;
+       border: none;
+       background-color: blue;
+       z-index: 2;
+       object-fit: cover;
+
    }
 
 
+
+   #dragB {
+       width: 90px;
+       height: 31px;
+       margin: 10px;
+       border: none;
+       background-color: blue;
+       z-index: 2;
+       object-fit: cover;
+
+   }
+
+   #dragA {
+       width: 120px;
+       height: 31px;
+       margin: 10px;
+       border: none;
+       background-color: blue;
+       z-index: 99;
+       overflow: visible;
+   }
+
+   #patrol {
+       width: 50px;
+       height: 31px;
+       background-color: yellow;
+       z-index: 2;
+       object-fit: cover;
+   }
+
+   #submarine {
+       width: 70px;
+       height: 31px;
+       background-color: yellow;
+       z-index: 2;
+       object-fit: cover;
+   }
+
+   #destroyer {
+       width: 70px;
+       height: 31px;
+       background-color: yellow;
+       z-index: 2;
+       object-fit: cover;
+   }
+
+   #battle {
+        width: 90px;
+        height: 31px;
+        background-color: yellow;
+        z-index: 2;
+        object-fit: cover;
+   }
+
+   #aircraft {
+        width: 120px;
+        height: 31px;
+        background-color: yellow;
+        z-index: 2;
+        object-fit: cover;
+   }
+
+   form#logout-form button {
+        font-size: 20px;
+        margin: 50px;
+        height: 30px;
+        width: 80px;
+        background-color: aqua;
+
+   }
 
     </style>
 
@@ -70,46 +159,56 @@
 
 <div class="container">
 
-    <div id="shipsGrid">
+    <div>
+        <table id="shipsGrid"  ondrop="drop(event)" ondragover="allowDrop(event)">
+
+        </table>
     </div>
 
-    <div id="salvosGrid">
+    <div>
+        <table id="salvosGrid">
+
+        </table>
     </div>
 
 </div>
 
 <div id="shipOptions">
     <h1>Available ships</h1>
-    <table>
-        <!--<td class="shipName">Patrol Boat</td>-->
-        <td></td>
-        <td></td>
-    </table>
-    <table>
-        <!--<td class="shipName">Submarine</td>-->
-        <td></td>
-        <td></td>
-        <td></td>
-    </table>
-    <table>
-        <!--<td class="shipName">Battleship</td>-->
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </table>
-    <table>
-        <!--<td class="shipName">Aircraft Carrier</td>-->
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </table>
 
-
-
+    <div>
+        <span class="shipName">Patrol Boat</span>
+        <div id="patrol"ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div id="dragP" draggable="true" ondragstart="drag(event)"></div>
+        </div>
+    </div>
+    <div>
+        <span class="shipName">Submarine</span>
+        <div id="submarine"ondrop="drop(event)" ondragover="allowDrop(event)">
+             <div id="dragS" draggable="true" ondragstart="drag(event)" ></div>
+        </div>
+    </div>
+    <div>
+        <span class="shipName">Destroyer</span>
+        <div id="destroyer"ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div id="dragD" draggable="true" ondragstart="drag(event)" ></div>
+        </div>
+    </div>
+    <div>
+        <span class="shipName">Battleship</span>
+        <div id="battle"ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div id="dragB" draggable="true" ondragstart="drag(event)" ></div>
+        </div>
+    </div>
+    <div>
+        <span class="shipName">Aircraft Carrier</span>
+        <div id="aircraft"ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div id="dragA" draggable="true" ondragstart="drag(event)" ></div>
+        </div>
+    </div>
 </div>
+
+
 
 <form id="logout-form" action="#">
     <button id="submit-btn-logout">logout</button>
@@ -121,11 +220,6 @@
         src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
-<!--<script-->
-        <!--src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"-->
-        <!--integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="-->
-        <!--crossorigin="anonymous"></script>-->
-
 <script src="game.js"></script>
 
 
