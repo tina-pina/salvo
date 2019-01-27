@@ -151,6 +151,8 @@ function createGrids() {
             else if(j === 0 && i > 0) col.innerHTML = colNames[i];  // first item
             else {
                 col.addEventListener('dragover', function(event){
+
+
                     allowDrop(event)
                     event.target.style.borderColor = "red";
                     event.target.style.borderWidth = "thick";
@@ -216,35 +218,48 @@ function allowDrop(ev) {
 
 function drag(ev) {
   ev.dataTransfer.setData("text", ev.target.id);
+
 }
 
 function drop(ev) {
     ev.preventDefault();
 
     /* get element you drag */
-    var data = ev.dataTransfer.getData("text");
+    var shipType = ev.dataTransfer.getData("text");
 
     /* append element to where you drop */
-    ev.target.appendChild(document.getElementById(data));
+    ev.target.appendChild(document.getElementById(shipType));
 
     /* get grid id and grid DOM */
     let gridId = ev.srcElement.id;
-    let targetDom = document.getElementById(gridId);
 
-    /* get ship id / ship type */
-    let shipLength = createShipsLength(targetDom.firstChild.id);
+    /* get ship length */
+    let shipLength = createShipsLength(shipType);
+
+    /* get ship direction */
+    let shipDirection = getShipDirection(shipType)
 
     /* generate ship locations */
-    let shipLocations = generateShipLoc(gridId, shipLength, shipDirection = "horizontal")
+    let shipLocations = generateShipLoc(gridId, shipLength, shipDirection)
 
-    /* update original gridArr */
-    let updatedGrid =  updateShipLoc(shipLocations, gridArr);
+    // todo if(isShipLocInsideGrid(shipLocations) and isShipNotOverlap(shipLocations, gridArr)) {
+    if(isShipLocInsideGrid(shipLocations)) {
+        /* update original gridArr */
+        let updatedGrid =  updateShipLoc(shipLocations, gridArr);
 
-    /* reflect the color */
-    let displayShips = colorGrid(gridArr);
+        /* reflect the color */
+        let displayShips = colorGrid(gridArr);
 
-    /* remove ship */
-    targetDom.firstChild.remove();
+        /* remove ship */
+        let targetDom = document.getElementById(gridId);
+        targetDom.firstChild.remove();
+    } else {
+        alert("place the ship only inside the grid!")
+        // remove the element
+        // bring the element back to the place -> maybe create function
+    }
+
+
 
 }
 
@@ -312,7 +327,6 @@ function generateShipLoc(start, shipLength, shipDirection = "horizontal") {
     }
 
     else if(shipDirection === 'vertical') {
-        //A1, B1, C1
         let rowArr = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
         let currentRowIndex = rowArr.indexOf(rowId) //2
         for(let i=0; i<shipLength; i++) {
@@ -342,7 +356,30 @@ function colorGrid(gridArr) {
     }
 }
 
+function isShipLocInsideGrid(shipLocations) {
+    let rowArr = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+    let colArr = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+    for(let loc of shipLocations) {
+        let row = loc[0];
+        let col = loc.slice(1);
+        if(!rowArr.includes(row) || !colArr.includes(col)) {
+            return false;
+        }
+    }
+    return true;
+}
 
+function isShipNotOverlap(shipLocations, gridArr) {
+    // todo if the locations you are trying to update already have true => overlapping => return false
+}
+
+function getShipDirection(shipType) {
+    if(shipType === "dragP") return document.querySelector('input[name="directionP"]:checked').value;
+    if(shipType === "dragS") return document.querySelector('input[name="directionS"]:checked').value;
+    if(shipType === "dragD") return document.querySelector('input[name="directionD"]:checked').value;
+    if(shipType === "dragB") return document.querySelector('input[name="directionB"]:checked').value;
+    else return document.querySelector('input[name="directionA"]:checked').value;
+ }
 
 
 
