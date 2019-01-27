@@ -139,33 +139,41 @@ function updateGrids() {
 
 function createGrids() {
 
-    //add ships grid
-
     let table = document.getElementById("shipsGrid");
-//    let table = document.createElement("table");
     let colNames = " ABCDEFGHIJ";
 
     for(let i=0; i< 11; i++) {
         let row = document.createElement("tr");
         for(let j=0; j<11; j++) {
             let col = document.createElement("td");
-            if(i === 0 && j > 0) col.innerHTML = `${j}`;  // first row
-            if(j === 0 && i > 0) col.innerHTML = colNames[i];  // first item
+            if(i === 0 && j === 0) col.innerHTML = ""
+            else if(i === 0 && j > 0) col.innerHTML = `${j}`;  // first row
+            else if(j === 0 && i > 0) col.innerHTML = colNames[i];  // first item
+            else {
+                col.addEventListener('dragover', function(event){
+                    allowDrop(event)
+                    event.target.style.borderColor = "red";
+                    event.target.style.borderWidth = "thick";
+                })
+                col.addEventListener('drop', function(event){
+                    drop(event) ;
+                    event.target.style.borderColor = "#dddddd";
+                    event.target.style.borderWidth = "1px";
+                })
+                col.addEventListener('dragleave', function(event){
+                    event.target.style.borderColor = "#dddddd";
+                    event.target.style.borderWidth = "1px";
+                })
+            }
             col.id = colNames[i] + j;
             row.appendChild(col);
-//            col.style = "position: sticky";
-//            row.style = "position: sticky";
         }
         table.appendChild(row);
     }
-//    table.appendChild(row)
 
     //add salvos grid
-
     table = document.getElementById("salvosGrid");
-//    table = document.createElement("table");
     colNames = " ABCDEFGHIJ";
-
     for(let i=0; i< 11; i++) {
         let row = document.createElement("tr");
         for(let j=0; j<11; j++) {
@@ -177,7 +185,6 @@ function createGrids() {
         }
         table.appendChild(row);
     }
-//    grid.appendChild(table);
 
 }
 
@@ -200,6 +207,8 @@ document.getElementById("submit-btn-logout").addEventListener("click", function(
 
 
 //drag/ drop part
+let gridArr = generateGridArray()
+
 
 function allowDrop(ev) {
   ev.preventDefault();
@@ -211,13 +220,32 @@ function drag(ev) {
 
 function drop(ev) {
     ev.preventDefault();
+
+    /* get element you drag */
     var data = ev.dataTransfer.getData("text");
+
+    /* append element to where you drop */
     ev.target.appendChild(document.getElementById(data));
+
+    /* get grid id and grid DOM */
     let gridId = ev.srcElement.id;
     let targetDom = document.getElementById(gridId);
-    console.log(createShipsLength(targetDom.firstChild.id));
+
+    /* get ship id / ship type */
+    let shipLength = createShipsLength(targetDom.firstChild.id);
+
+    /* generate ship locations */
+    let shipLocations = generateShipLoc(gridId, shipLength, shipDirection = "horizontal")
+
+    /* update original gridArr */
+    let updatedGrid =  updateShipLoc(shipLocations, gridArr);
+
+    /* reflect the color */
+    let displayShips = colorGrid(gridArr);
+
+    /* remove ship */
     targetDom.firstChild.remove();
-//    targetDom.style.backgroundColor = "blue";
+
 }
 
 function createShipsLength(shipType) {
@@ -226,11 +254,6 @@ function createShipsLength(shipType) {
     if(shipType === "dragB") return 4;
     else return 5;
 }
-
-//[
-//[false, false, false, false, false, false....],
-//[],........
-//]
 
 function generateGridArray() {
     let grArr = [];
@@ -244,8 +267,6 @@ function generateGridArray() {
     }
     return grArr;
 }
-
-//console.log(generateGridArray());
 
 function updateGrid(rowId, colId, gridArr) {
     let colNum = Number(colId) - 1;
@@ -266,29 +287,21 @@ function updateGrid(rowId, colId, gridArr) {
     return gridArr;
 }
 
-//console.log(updateGrid("A", "1", generateGridArray()));
-//console.log(updateGrid("D", "5", generateGridArray()));
-//console.log(updateGrid("C", "2", generateGridArray()));
-
-// updateShipLoc(["A1", "A2", "A3"], gridArr)
-
 function updateShipLoc(shipLocArr, gridArr) {
 
     for(let loc of shipLocArr) {
         let rowId = loc[0];
-        let colId = loc[1];
+        let colId = loc.slice(1);
 
         gridArr = updateGrid(rowId, colId, gridArr);
     }
     return gridArr;
 }
 
-console.log(updateShipLoc((["A1", "A2", "A3"]), generateGridArray()))
-
 function generateShipLoc(start, shipLength, shipDirection = "horizontal") {
 
     let rowId = start[0]
-    let colId = start[1]
+    let colId = start.slice(1);
     let shipLocArr = [];
 
     if(shipDirection === 'horizontal') {
@@ -320,7 +333,6 @@ function colorGrid(gridArr) {
             if(gridArr[i][j] === true) {
                console.log(finalId)
                document.getElementById(finalId).style.backgroundColor = "blue";
-
             }
             else {
                document.getElementById(finalId).style.backgroundColor = "white";
