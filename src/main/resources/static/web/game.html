@@ -181,7 +181,7 @@
     <div>
         <span class="shipName">Patrol Boat</span>
         <div id="patrol"ondrop="drop(event)" ondragover="allowDrop(event)">
-            <div id="dragP" draggable="true" ondragstart="drag(event)" ondragend="dragend(event)"></div>
+            <div id="dragP" draggable="true" ondragstart="drag(event)"></div>
         </div>
         <form id="pForm">
             <input type="radio" name="directionP" value="horizontal" checked> Horizontal<br>
@@ -191,7 +191,7 @@
     <div>
         <span class="shipName">Submarine</span>
         <div id="submarine"ondrop="drop(event)" ondragover="allowDrop(event)">
-             <div id="dragS" draggable="true" ondragstart="drag(event)" ondragend="dragend(event)"></div>
+             <div id="dragS" draggable="true" ondragstart="drag(event)"></div>
         </div>
         <form id="sForm">
             <input type="radio" name="directionS" value="horizontal" checked> Horizontal<br>
@@ -201,7 +201,7 @@
     <div>
         <span class="shipName">Destroyer</span>
         <div id="destroyer"ondrop="drop(event)" ondragover="allowDrop(event)">
-            <div id="dragD" draggable="true" ondragstart="drag(event)" ondragend="dragend(event)"></div>
+            <div id="dragD" draggable="true" ondragstart="drag(event)"></div>
         </div>
         <form id="dForm">
             <input type="radio" name="directionD" value="horizontal" checked> Horizontal<br>
@@ -211,7 +211,7 @@
     <div>
         <span class="shipName">Battleship</span>
         <div id="battle"ondrop="drop(event)" ondragover="allowDrop(event)">
-            <div id="dragB" draggable="true" ondragstart="drag(event)" ondragend="dragend(event)"></div>
+            <div id="dragB" draggable="true" ondragstart="drag(event)"></div>
         </div>
         <form id="bForm">
             <input type="radio" name="directionB" value="horizontal" checked> Horizontal<br>
@@ -221,7 +221,7 @@
     <div>
         <span class="shipName">Aircraft Carrier</span>
         <div id="aircraft"ondrop="drop(event)" ondragover="allowDrop(event)">
-            <div id="dragA" draggable="true" ondragstart="drag(event)" ondragend="dragend(event)"></div>
+            <div id="dragA" draggable="true" ondragstart="drag(event)"></div>
         </div>
         <form id="aForm">
             <input type="radio" name="directionA" value="horizontal" checked> Horizontal<br>
@@ -230,7 +230,9 @@
     </div>
 </div>
 
-
+<form action="">
+    <button id="submit-btn-ships">submit ships</button>
+</form>
 
 <form id="logout-form" action="#">
     <button id="submit-btn-logout">logout</button>

@@ -1,4 +1,11 @@
 
+//drag/ drop part
+let shipGridArr = generateGridArray();
+let salvoGridArr = generateGridArray(); // todo think how to use this
+let shipData = [];
+
+createGrids();
+updateGrids();
 
 
 function paramObj(search) {
@@ -14,7 +21,7 @@ function paramObj(search) {
     keyRes += obj.gp
   }
 
-  return keyRes;
+  return keyRes.trim();
 }
 
 //get the game player id from the sites url
@@ -56,11 +63,9 @@ function updateGrids() {
             for(let loc of ship.locations) shipLocations.push(loc);
         }
         for(let locationCode of shipLocations) {
-            let targetGrid = locationCode;
-            let tableId = document.querySelectorAll(`#shipsGrid #${targetGrid}`);
-            let singleElement = tableId[0];
-            //todo give each ship a different color;
-            singleElement.style.backgroundColor = 'yellow';
+            let rowId = locationCode[0];
+            let colId = locationCode.slice(1);
+            shipGridArr = updateGrid(rowId, colId, shipGridArr)
         }
 
         let playerSalvo = {};
@@ -94,6 +99,8 @@ function updateGrids() {
                 singleElement.innerHTML = turnKey;
             }
         }
+
+        colorGrid(shipGridArr)
     })
 
 }
@@ -119,22 +126,43 @@ function updateGrids() {
 //}
 
 
-//function createShips(gamePlayerId, shipArr) {
-//
-//    let gamePlayerId = paramObj(location.href);
-//    const response = await fetch(`/api/games/players/${gamePlayerId}/ships`, {
-//          headers: {
-//            'Accept': 'application/json',
-//            'Content-Type': 'application/json'
-//          },
-//          method: "POST",
-//          body: JSON.stringify(shipArr)
-//    });
-//    const json = await response.json();
-//    console.log(json);
-//
-//}
+function createShips(shipArr) {
 
+    let gamePlayerId = paramObj(location.href);
+    fetch(`/api/games/players/${gamePlayerId}/ships`, {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          method: "POST",
+          body: JSON.stringify(shipArr)
+    }).then(function(res) {console.log(res)})
+    .catch(function(res) {console.log(res)})
+
+}
+
+
+function getShipName(shipType) {
+    if(shipType === "dragP") return "patrol boat";
+    if(shipType === "dragS") return "submarine boat";
+    if(shipType === "dragB") return "battleship";
+    if(shipType === "dragA") return "aircraft carrier";
+}
+
+
+function updateShipArray(shipType, shipLocations) {
+    let obj = {};
+
+//    { "type": "destroyer", "locations": ["A1", "B1", "C1"]}
+
+    let shipName = getShipName(shipType);
+
+    obj["type"] = shipName;
+    obj["locations"] = shipLocations
+
+    shipData.push(obj);
+
+}
 
 
 function createGrids() {
@@ -190,8 +218,12 @@ function createGrids() {
 
 }
 
-createGrids();
-updateGrids();
+
+document.getElementById("submit-btn-ships").addEventListener("click", function(e){
+    e.preventDefault();
+    //let gpid = paramObj(location.href);
+    createShips(shipData);
+})
 
 
 
@@ -206,12 +238,6 @@ document.getElementById("submit-btn-logout").addEventListener("click", function(
     .catch(error => {})
 })
 
-
-
-//drag/ drop part
-let gridArr = generateGridArray()
-
-
 function allowDrop(ev) {
   ev.preventDefault();
 }
@@ -225,13 +251,17 @@ function drop(ev) {
     ev.preventDefault();
 
     /* get element you drag */
-    var shipType = ev.dataTransfer.getData("text");
+    let shipType = ev.dataTransfer.getData("text");
+
+    /* parking location of ship */
+    let shipTypeParking = document.getElementById(shipType).parentNode.id;
 
     /* append element to where you drop */
     ev.target.appendChild(document.getElementById(shipType));
 
     /* get grid id and grid DOM */
     let gridId = ev.srcElement.id;
+    let targetDom = document.getElementById(gridId);
 
     /* get ship length */
     let shipLength = createShipsLength(shipType);
@@ -242,25 +272,41 @@ function drop(ev) {
     /* generate ship locations */
     let shipLocations = generateShipLoc(gridId, shipLength, shipDirection)
 
-    // todo if(isShipLocInsideGrid(shipLocations) and isShipNotOverlap(shipLocations, gridArr)) {
-    if(isShipLocInsideGrid(shipLocations)) {
+
+    if(isShipLocInsideGrid(shipLocations) && isShipNotOverlap(shipLocations, shipGridArr)) {
+
+        /* when user press submit ships button we fetch ships in the api*/
+        let shipsToCreate = updateShipArray(shipType, shipLocations);
+
         /* update original gridArr */
-        let updatedGrid =  updateShipLoc(shipLocations, gridArr);
+        let updatedGrid =  updateMultipleLoc(shipLocations, shipGridArr);
 
         /* reflect the color */
-        let displayShips = colorGrid(gridArr);
+        let displayShips = colorGrid(shipGridArr);
 
         /* remove ship */
-        let targetDom = document.getElementById(gridId);
         targetDom.firstChild.remove();
+
     } else {
-        alert("place the ship only inside the grid!")
-        // remove the element
-        // bring the element back to the place -> maybe create function
+        alert("ships should NOT overlap & ships should NOT go outside of the grid!")
+
+        let shipT = document.getElementById(shipType);
+
+        /* get the location where the ship was parked before */
+        let shipP = document.getElementById(shipTypeParking);
+
+        /* get ship type itself and clone it */
+        let clnChild = shipT.cloneNode(true);
+
+        /* remove ship and color of grid */
+        targetDom.firstChild.remove();
+        targetDom.style.borderColor = "#dddddd";
+        targetDom.style.borderWidth = "1px";
+
+        /* bring ship back to original location */
+        shipP.appendChild(clnChild);
+
     }
-
-
-
 }
 
 function createShipsLength(shipType) {
@@ -302,9 +348,21 @@ function updateGrid(rowId, colId, gridArr) {
     return gridArr;
 }
 
-function updateShipLoc(shipLocArr, gridArr) {
+//function updateShipLoc(shipLocArr, gridArr) {
+//
+//    for(let loc of shipLocArr) {
+//        let rowId = loc[0];
+//        let colId = loc.slice(1);
+//
+//        gridArr = updateGrid(rowId, colId, gridArr);
+//    }
+//    return gridArr;
+//}
 
-    for(let loc of shipLocArr) {
+
+function updateMultipleLoc(locArr, gridArr) {
+
+    for(let loc of locArr) {
         let rowId = loc[0];
         let colId = loc.slice(1);
 
@@ -312,6 +370,7 @@ function updateShipLoc(shipLocArr, gridArr) {
     }
     return gridArr;
 }
+
 
 function generateShipLoc(start, shipLength, shipDirection = "horizontal") {
 
@@ -348,10 +407,6 @@ function colorGrid(gridArr) {
                console.log(finalId)
                document.getElementById(finalId).style.backgroundColor = "blue";
             }
-            else {
-               document.getElementById(finalId).style.backgroundColor = "white";
-
-            }
         }
     }
 }
@@ -370,7 +425,19 @@ function isShipLocInsideGrid(shipLocations) {
 }
 
 function isShipNotOverlap(shipLocations, gridArr) {
-    // todo if the locations you are trying to update already have true => overlapping => return false
+   /* if locations are already true -> already ship there -> return false */
+   /* iterate the grid array if there is false or true inside */
+
+   let rowArr = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+   for(let loc of shipLocations) {
+        let rowId = loc[0]; //"H"
+        let colIdx = loc.slice(1); //"4"
+        let rowIdx = rowArr.indexOf(rowId);
+        if(gridArr[rowIdx][colIdx-1] === true) {
+            return false;
+        }
+   }
+   return true;
 }
 
 function getShipDirection(shipType) {

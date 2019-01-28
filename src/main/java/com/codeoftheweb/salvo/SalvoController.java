@@ -327,20 +327,15 @@ public class SalvoController {
             return new ResponseEntity<>(makeMap("error", "game player with this id doesn't exist"), HttpStatus.FORBIDDEN);
         }
 
-        else {
-            for(Ship s: ships) {
+        GamePlayer gp = gamePlayerRepository.findOne(gamePlayerId);
 
-//                List shipsL = Arrays.asList(s.getLocations());
-                ArrayList<String> shipLocations = new ArrayList<String>(s.getLocations());
-
-                shipRepository.save(new Ship(s.getType(), shipLocations, s.getGamePlayer()));
-            }
-            return new ResponseEntity<>(makeMap("success", "ships are created"), HttpStatus.CREATED);
-
+        for(Ship s: ships) {
+            ArrayList<String> shipLocations = new ArrayList<String>(s.getLocations());
+            shipRepository.save(new Ship(s.getType(), shipLocations, gp));
         }
+        return new ResponseEntity<>(makeMap("success", "ships are created"), HttpStatus.CREATED);
 
     }
-
 
 }
 
