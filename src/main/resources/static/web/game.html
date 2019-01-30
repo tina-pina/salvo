@@ -60,7 +60,6 @@
        background-color: blue;
        z-index: 2;
        object-fit: cover;
-
    }
 
    #dragD {
@@ -71,9 +70,7 @@
        background-color: blue;
        z-index: 2;
        object-fit: cover;
-
    }
-
 
 
    #dragB {
@@ -84,7 +81,6 @@
        background-color: blue;
        z-index: 2;
        object-fit: cover;
-
    }
 
    #dragA {
@@ -143,6 +139,21 @@
         height: 30px;
         width: 80px;
         background-color: aqua;
+   }
+
+   .containerShips {
+        display: flex;
+        flex-direction: column;
+   }
+
+   .containerSalvos {
+        display: flex;
+        flex-direction: column;
+   }
+
+   .containerShipsSalvos {
+        display: flex;
+        justify-content: space-between
 
    }
 
@@ -175,68 +186,91 @@
 
 </div>
 
-<div id="shipOptions">
-    <h1>Available ships</h1>
+<div class="containerShipsSalvos">
+    <div class="containerShips">
+        <div id="shipOptions">
+            <h1>Available ships</h1>
 
-    <div>
-        <span class="shipName">Patrol Boat</span>
-        <div id="patrol"ondrop="drop(event)" ondragover="allowDrop(event)">
-            <div id="dragP" draggable="true" ondragstart="drag(event)"></div>
+            <div>
+                <span class="shipName">Patrol Boat</span>
+                <div id="patrol"ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div id="dragP" draggable="true" ondragstart="drag(event)"></div>
+                </div>
+                <form id="pForm">
+                    <input type="radio" name="directionP" value="horizontal" checked> Horizontal<br>
+                    <input type="radio" name="directionP" value="vertical"> Vertical<br>
+                </form>
+            </div>
+            <div>
+                <span class="shipName">Submarine</span>
+                <div id="submarine"ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div id="dragS" draggable="true" ondragstart="drag(event)"></div>
+                </div>
+                <form id="sForm">
+                    <input type="radio" name="directionS" value="horizontal" checked> Horizontal<br>
+                    <input type="radio" name="directionS" value="vertical"> Vertical<br>
+                </form>
+            </div>
+            <div>
+                <span class="shipName">Destroyer</span>
+                <div id="destroyer"ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div id="dragD" draggable="true" ondragstart="drag(event)"></div>
+                </div>
+                <form id="dForm">
+                    <input type="radio" name="directionD" value="horizontal" checked> Horizontal<br>
+                    <input type="radio" name="directionD" value="vertical"> Vertical<br>
+                </form>
+            </div>
+            <div>
+                <span class="shipName">Battleship</span>
+                <div id="battle"ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div id="dragB" draggable="true" ondragstart="drag(event)"></div>
+                </div>
+                <form id="bForm">
+                    <input type="radio" name="directionB" value="horizontal" checked> Horizontal<br>
+                    <input type="radio" name="directionB" value="vertical"> Vertical<br>
+                </form>
+            </div>
+            <div>
+                <span class="shipName">Aircraft Carrier</span>
+                <div id="aircraft"ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div id="dragA" draggable="true" ondragstart="drag(event)"></div>
+                </div>
+                <form id="aForm">
+                    <input type="radio" name="directionA" value="horizontal" checked> Horizontal<br>
+                    <input type="radio" name="directionA" value="vertical"> Vertical<br>
+                </form>
+            </div>
         </div>
-        <form id="pForm">
-            <input type="radio" name="directionP" value="horizontal" checked> Horizontal<br>
-            <input type="radio" name="directionP" value="vertical"> Vertical<br>
+
+        <div>
+            <form action="">
+                <button id="submit-btn-ships">submit ships</button>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="containerSalvos">
+        <form action="">
+            <button id="submit-btn-salvos">submit salvos</button>
         </form>
     </div>
-    <div>
-        <span class="shipName">Submarine</span>
-        <div id="submarine"ondrop="drop(event)" ondragover="allowDrop(event)">
-             <div id="dragS" draggable="true" ondragstart="drag(event)"></div>
-        </div>
-        <form id="sForm">
-            <input type="radio" name="directionS" value="horizontal" checked> Horizontal<br>
-            <input type="radio" name="directionS" value="vertical"> Vertical<br>
-        </form>
-    </div>
-    <div>
-        <span class="shipName">Destroyer</span>
-        <div id="destroyer"ondrop="drop(event)" ondragover="allowDrop(event)">
-            <div id="dragD" draggable="true" ondragstart="drag(event)"></div>
-        </div>
-        <form id="dForm">
-            <input type="radio" name="directionD" value="horizontal" checked> Horizontal<br>
-            <input type="radio" name="directionD" value="vertical"> Vertical<br>
-        </form>
-    </div>
-    <div>
-        <span class="shipName">Battleship</span>
-        <div id="battle"ondrop="drop(event)" ondragover="allowDrop(event)">
-            <div id="dragB" draggable="true" ondragstart="drag(event)"></div>
-        </div>
-        <form id="bForm">
-            <input type="radio" name="directionB" value="horizontal" checked> Horizontal<br>
-            <input type="radio" name="directionB" value="vertical"> Vertical<br>
-        </form>
-    </div>
-    <div>
-        <span class="shipName">Aircraft Carrier</span>
-        <div id="aircraft"ondrop="drop(event)" ondragover="allowDrop(event)">
-            <div id="dragA" draggable="true" ondragstart="drag(event)"></div>
-        </div>
-        <form id="aForm">
-            <input type="radio" name="directionA" value="horizontal" checked> Horizontal<br>
-            <input type="radio" name="directionA" value="vertical"> Vertical<br>
-        </form>
-    </div>
+
+
+
+
+
 </div>
 
-<form action="">
-    <button id="submit-btn-ships">submit ships</button>
-</form>
+
+
 
 <form id="logout-form" action="#">
     <button id="submit-btn-logout">logout</button>
 </form>
+
+
 
 <script
         src="https://code.jquery.com/jquery-3.3.1.min.js"

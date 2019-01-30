@@ -36,6 +36,10 @@ public class SalvoController {
     @Autowired
     private ShipRepository shipRepository;
 
+    @Autowired
+    private SalvoRepository salvoRepository;
+
+
     private boolean isGuest(Authentication authentication) {
         return authentication == null || authentication instanceof AnonymousAuthenticationToken;
     }
@@ -322,10 +326,12 @@ public class SalvoController {
             return new ResponseEntity<>(makeMap("error", "game player with this id doesn't exist"), HttpStatus.UNAUTHORIZED);
         }
         //4. A Forbidden response should be sent if the user already has ships placed
-        Set currentPlayerShips =  currentPlayer.getShips();
+        Set<Ship> currentPlayerShips =  currentPlayer.getShips();
         if(currentPlayerShips.size() != 0) {
             return new ResponseEntity<>(makeMap("error", "game player with this id doesn't exist"), HttpStatus.FORBIDDEN);
         }
+
+        //Otherwise, the ship should be added to the game player and saved, and a Created response should be sent.
 
         GamePlayer gp = gamePlayerRepository.findOne(gamePlayerId);
 
@@ -337,7 +343,45 @@ public class SalvoController {
 
     }
 
+    @RequestMapping(value="/api/games/players/{gamePlayerId}/salvos", method=RequestMethod.POST)
+    //body request should be parsed into a salvo object consisting of turn and list of locations
+    public ResponseEntity<Map<String,Object>> addSalvos (@PathVariable Long gamePlayerId, @RequestBody Salvo salvo, Authentication authentication) {
+        // {turn: 1, locations: ["A1", "B1", ...]}
+        //1. An Unauthorized response should be sent if there is no current user logged in
+        String curUsername = playerRepo.findByUsername(authentication.getName()).getUsername();
+        Player currentUsername = playerRepo.findByUsername(curUsername);
+        if (currentUsername == null) {
+            return new ResponseEntity<>(makeMap("error", "User not logged in"), HttpStatus.UNAUTHORIZED);
+        }
+        //2. there is no game player with the given ID
+        GamePlayer currentPlayer = gamePlayerRepository.findOne(gamePlayerId);
+        if (currentPlayer == null) {
+            return new ResponseEntity<>(makeMap("error", "game player with this id doesn't exist"), HttpStatus.UNAUTHORIZED);
+        }
+        //3. the current user is not the game player the ID references
+        String currentPlayerName = currentPlayer.getPlayer().getUsername();
+        if (currentPlayerName != currentUsername.getUsername()) {
+            return new ResponseEntity<>(makeMap("error", "game player with this id doesn't exist"), HttpStatus.UNAUTHORIZED);
+        }
+        //4. A Forbidden response should be sent if the user already has submitted a salvo for the turn listed
+        // Post method from frontend sending data to this request method in the backend -> user
+        Integer userTurn = salvo.getTurnNum();
+        // get salvos from the user already existing in the database
+        Set<Salvo> gamePlayerSalvos = currentPlayer.getSalvos();
+        for(Salvo s: gamePlayerSalvos) {
+            if(s.getTurnNum() == userTurn) {
+                return new ResponseEntity<>(makeMap("error", "salvo already existing!"), HttpStatus.FORBIDDEN);
+            }
+        }
+
+        ArrayList<String> salvoLocations = new ArrayList<String>(salvo.getLocations());
+        salvoRepository.save(new Salvo(salvoLocations, currentPlayer, salvo.getTurnNum()));
+
+        return new ResponseEntity<>(makeMap("success", "salvos are created"), HttpStatus.CREATED);
+    }
+
 }
+
 
 
 

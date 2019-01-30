@@ -1,8 +1,12 @@
 
-//drag/ drop part
+/* drag/ drop part */
 let shipGridArr = generateGridArray();
-let salvoGridArr = generateGridArray(); // todo think how to use this
+let salvoGridArr = generateGridArray();
+console.log(salvoGridArr);
 let shipData = [];
+let salvoLocArr = [];
+console.log(salvoLocArr)
+// let salvoLocObj = {};
 
 createGrids();
 updateGrids();
@@ -20,11 +24,10 @@ function paramObj(search) {
   for(let key in obj) {
     keyRes += obj.gp
   }
-
   return keyRes.trim();
 }
 
-//get the game player id from the sites url
+/* get the game player id from the sites url */
 
 
 function updateGrids() {
@@ -39,9 +42,12 @@ function updateGrids() {
     .then(json => {
 
         let playerEmailArr = [];
+        /* ships data */
         let shipsArr = json.ships;
+        /* salvos data */
         let salvosArr = json.salvos;
 
+        /* show players for the game on top of the page*/
         let gamePlayers = json.gamePlayers;
         for(let player of gamePlayers) {
             if(!playerEmailArr.includes(player.player.email)) {
@@ -49,6 +55,7 @@ function updateGrids() {
             }
         }
 
+        /* show players for the game on top of the page*/
         for(let item of playerEmailArr) {
             let players = document.getElementById("players");
             let p = document.createElement("p");
@@ -56,7 +63,7 @@ function updateGrids() {
             players.appendChild(p);
         }
 
-        //add the ships on their designated locations to the grid;
+        /* add the ships on their designated locations to the grid */
 
         let shipLocations = [];
         for(let ship of shipsArr) {
@@ -65,14 +72,35 @@ function updateGrids() {
         for(let locationCode of shipLocations) {
             let rowId = locationCode[0];
             let colId = locationCode.slice(1);
-            shipGridArr = updateGrid(rowId, colId, shipGridArr)
+            //after creating the basic array it is updated -> updateGrid func
+            shipGridArr = updateGrid(rowId, colId, shipGridArr);
+        }
+
+        /* add salvos on their designated locations to the grid */
+
+        let salvoLocations = [];
+        for(let salvos of salvosArr) {
+            for(let loc of salvos.locations) salvoLocations.push(loc);
+        }
+        for(let locationCode of salvoLocations) {
+            let rowId = locationCode[0];
+            let colId = locationCode.slice(1);
+            //after creating the basic array it is updated -> updateGrid func
+            salvoGridArr = updateGrid(rowId, colId, salvoGridArr);
+//            if(locationCode === true) {
+//                colorGrid();
+//            }
         }
 
         let playerSalvo = {};
         let opponentSalvo = {}
 
+
         for(let salvo of salvosArr) {
+
+            // todo WRONG! instead of gamePlayerId -> player id
             if(salvo.player === Number(gamePlayerId)) {
+                //playerSalvo = {1: ["A1", "B2"...]}
                 playerSalvo[salvo.turn] = salvo.locations
             }
             else {
@@ -81,9 +109,10 @@ function updateGrids() {
         }
 
         for(turnKey in playerSalvo) {
-            let locations = playerSalvo[turnKey]
+            let locations = playerSalvo[turnKey] //"1", "2".....
             for(let locCode of locations) {
-                let tableId = document.querySelectorAll(`#shipsGrid #${locCode}`);
+                let tableId = document.querySelectorAll(`#salvosGrid #${locCode}`); //A1, B2
+
                 let singleElement = tableId[0];
                 singleElement.style.backgroundColor = 'red';
                 singleElement.innerHTML = turnKey;
@@ -93,36 +122,37 @@ function updateGrids() {
         for(turnKey in opponentSalvo) {
             let locations = opponentSalvo[turnKey]
             for(let locCode of locations) {
-                let tableId = document.querySelectorAll(`#salvosGrid #${locCode}`);
+                let tableId = document.querySelectorAll(`#shipsGrid #${locCode}`);
                 let singleElement = tableId[0];
                 singleElement.style.backgroundColor = 'grey';
                 singleElement.innerHTML = turnKey;
             }
         }
 
-        colorGrid(shipGridArr)
+        colorGrid(shipGridArr, "ship")
     })
-
 }
 
-//
 //const testRequest = async () => {
 //    let gamePlayerId = paramObj(location.href);
-//    const response = await fetch(`/api/games/players/${gamePlayerId}/ships`, {
+//    const response = await fetch(`/api/games/players/${gamePlayerId}/salvos`, {
 //          headers: {
 //            'Accept': 'application/json',
 //            'Content-Type': 'application/json'
 //          },
 //          method: "POST",
-//          body: JSON.stringify(
-//           [{ "type": "destroyer", "locations": ["A1", "B1", "C1"]},
-//             { "type": "patrol boat", "locations": ["H6", "H7"] },
-//             { "type": "Aircraft Carrier", "locations": ["J1", "J2", "J3", "J4", "J5"]}
-//           ]
-//          )
+//          body: JSON.stringify({"locations": ["A1", "B1", "C1"], "turnNum": "1"})
 //    });
 //    const json = await response.json();
 //    console.log(json);
+//}
+
+//function updateSalvoLoc(locationsArr, turnNum) {
+//
+////    { "type": "destroyer", "locations": ["A1", "B1", "C1"]}
+//    let turnNum = 1;
+//    salvoLocObj["turnNum"] = turnNum;
+//    salvoLocObj["locations"] = locationsArr;
 //}
 
 
@@ -136,6 +166,21 @@ function createShips(shipArr) {
           },
           method: "POST",
           body: JSON.stringify(shipArr)
+    }).then(function(res) {console.log(res)})
+    .catch(function(res) {console.log(res)})
+}
+
+
+function createSalvos(salvoLocArr) {
+
+    let gamePlayerId = paramObj(location.href);
+    fetch(`/api/games/players/${gamePlayerId}/salvos`, {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          method: "POST",
+          body: JSON.stringify({ turnNum: 1, locations: salvoLocArr })
     }).then(function(res) {console.log(res)})
     .catch(function(res) {console.log(res)})
 
@@ -161,7 +206,6 @@ function updateShipArray(shipType, shipLocations) {
     obj["locations"] = shipLocations
 
     shipData.push(obj);
-
 }
 
 
@@ -186,7 +230,7 @@ function createGrids() {
                     event.target.style.borderWidth = "thick";
                 })
                 col.addEventListener('drop', function(event){
-                    drop(event) ;
+                    drop(event);
                     event.target.style.borderColor = "#dddddd";
                     event.target.style.borderWidth = "1px";
                 })
@@ -211,6 +255,9 @@ function createGrids() {
             if(i === 0 && j > 0) col.innerHTML = `${j}`;  // first row
             if(j === 0 && i > 0) col.innerHTML = colNames[i];  // first item
             col.id = colNames[i] + j;
+            col.addEventListener('click', function(event) {
+                clickSalvos(event);
+            })
             row.appendChild(col);
         }
         table.appendChild(row);
@@ -226,7 +273,6 @@ document.getElementById("submit-btn-ships").addEventListener("click", function(e
 })
 
 
-
 document.getElementById("submit-btn-logout").addEventListener("click", function(e){
 
     e.preventDefault();
@@ -236,6 +282,23 @@ document.getElementById("submit-btn-logout").addEventListener("click", function(
         window.location = "/web/games.html"
     })
     .catch(error => {})
+})
+
+
+document.getElementById("submit-btn-salvos").addEventListener("click", function(e){
+    e.preventDefault();
+    let count = 0;
+
+    for(let i = 0; i < salvoLocArr.length; i++ ) {
+        count++;
+    }
+
+    if(count < 6) {
+        createSalvos(salvoLocArr);
+    }
+    else {
+        alert('you can maximum submit 5 salvos!');
+    }
 })
 
 function allowDrop(ev) {
@@ -282,7 +345,7 @@ function drop(ev) {
         let updatedGrid =  updateMultipleLoc(shipLocations, shipGridArr);
 
         /* reflect the color */
-        let displayShips = colorGrid(shipGridArr);
+        let displayShips = colorGrid(shipGridArr, "ship");
 
         /* remove ship */
         targetDom.firstChild.remove();
@@ -309,6 +372,107 @@ function drop(ev) {
     }
 }
 
+function clickSalvos(ev) {
+    let rowArr = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+
+    let gridId = ev.srcElement.id;
+
+    let rowId = gridId[0];
+    let colId = gridId.slice(1);
+    // get location of salvo on the grid
+    let location = gridId;
+    salvoLocArr.push(location);
+
+    // check value salvosGridArr
+    let rowIdx = rowArr.indexOf(rowId);
+
+    let loc = salvoGridArr[rowIdx][colId -1]
+
+    if(loc === true) {
+
+        loc = false;
+
+        //remove salvo location from salvoLocArr
+
+        for(let salvo of salvoLocArr) {
+            if(salvo === location) {
+                let indexLocInArray = salvoLocArr.indexOf(gridId);
+
+                console.log("HERE", indexLocInArray);
+                if(indexLocInArray > -1) {
+                    salvoLocArr.splice(indexLocInArray, 1);
+                }
+            }
+        }
+        let salvoGrid = updateGrid(rowId, colId, salvoGridArr);
+
+        console.log("THIS IS remove salvo")
+
+                // color the salvo grid
+
+        colorGrid(salvoGridArr, "salvo");
+    }
+
+    else {
+
+        // update the salvo grid
+
+        let salvoGrid = updateGrid(rowId, colId, salvoGridArr);
+
+        console.log("THIS IS add salvo");
+
+        // color the salvo grid
+
+        colorGrid(salvoGridArr, "salvo");
+    }
+
+
+
+
+
+
+//    myFunction(gridId);
+
+
+
+    // to "un-click" salvos
+//    var el = document.getElementById(gridId);
+//    console.log(el.classList);
+
+//    removeSalvos(ev);
+
+//    colorGrid(salvoGridArr, "salvo");
+
+//    salvoGrid = updateGrid(rowId, colId, salvoGridArr);
+//
+//    colorGrid(salvoGridArr, "salvo");
+}
+
+//function removeSalvos(ev) {
+//    let gridId = ev.srcElement.id;
+//
+//    console.log("THIS IS REMOVE EV")
+//
+//    var el = document.getElementById(gridId);
+//    el.classList.toggle("visible");
+////    el.style.backgroundColor = "white";
+////    el.style.display = 'none';
+//
+//}
+
+//function myFunction(gridId) {
+//
+//gridId = document.getElementById(gridId);
+//
+// if (gridId.style.display === "none") {
+//    gridId.style.display = "block";
+//  } else {
+//    gridId.style.display = "none";
+//  }
+//}
+
+
+/* create ships lengths */
 function createShipsLength(shipType) {
     if(shipType === "dragP") return 2;
     if(shipType === "dragS" || shipType === "dragD") return 3;
@@ -316,6 +480,8 @@ function createShipsLength(shipType) {
     else return 5;
 }
 
+
+/* generate grid Arr for ships and salvos */
 function generateGridArray() {
     let grArr = [];
 
@@ -328,6 +494,8 @@ function generateGridArray() {
     }
     return grArr;
 }
+
+
 
 function updateGrid(rowId, colId, gridArr) {
     let colNum = Number(colId) - 1;
@@ -371,7 +539,7 @@ function updateMultipleLoc(locArr, gridArr) {
     return gridArr;
 }
 
-
+/* generate ship location */
 function generateShipLoc(start, shipLength, shipDirection = "horizontal") {
 
     let rowId = start[0]
@@ -396,19 +564,39 @@ function generateShipLoc(start, shipLength, shipDirection = "horizontal") {
     return shipLocArr;
 }
 
-function colorGrid(gridArr) {
+/* generate salvo location */
+
+
+
+function colorGrid(gridArr, gridType) {
+
+    let targetGrid;
+    if(gridType === "ship") {
+        targetGrid = "shipsGrid"
+    } else if (gridType === "salvo") {
+        targetGrid = "salvosGrid"
+    }
+
     let rowArr = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+    let shipTable = document.getElementById("shipsGrid");
+    let salvoTable = document.getElementById("salvosGrid");
+
+
     for(let i=0; i<gridArr.length;i++) {
         for(let j=0; j<gridArr.length; j++) {
             let columnId = j+1;
             let rowId = rowArr[i];
             let finalId = rowId + columnId
             if(gridArr[i][j] === true) {
-               console.log(finalId)
-               document.getElementById(finalId).style.backgroundColor = "blue";
+               console.log(finalId);
+               document.querySelector(`#${targetGrid} #${finalId}`).style.backgroundColor = "blue";
+            }
+            else if (gridArr[i][j] === false) {
+                document.querySelector(`#${targetGrid} #${finalId}`).style.backgroundColor = "white";
             }
         }
     }
+
 }
 
 function isShipLocInsideGrid(shipLocations) {
