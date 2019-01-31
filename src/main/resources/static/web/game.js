@@ -46,6 +46,7 @@ function updateGrids() {
         let shipsArr = json.ships;
         /* salvos data */
         let salvosArr = json.salvos;
+        console.log("SALVOSARR", salvosArr);
 
         /* show players for the game on top of the page*/
         let gamePlayers = json.gamePlayers;
@@ -87,19 +88,19 @@ function updateGrids() {
             let colId = locationCode.slice(1);
             //after creating the basic array it is updated -> updateGrid func
             salvoGridArr = updateGrid(rowId, colId, salvoGridArr);
-//            if(locationCode === true) {
-//                colorGrid();
-//            }
+            // remove event listener click if salvo already exists
+            document.querySelector(`#salvosGrid #${locationCode}`).removeEventListener("click", clickSalvos);
         }
 
         let playerSalvo = {};
         let opponentSalvo = {}
 
+        let currentPlayer = json.gamePlayers.filter(gamePlayerObj => gamePlayerObj.id === Number(gamePlayerId))[0];
+        let playerId = currentPlayer.player.id;
 
         for(let salvo of salvosArr) {
 
-            // todo WRONG! instead of gamePlayerId -> player id
-            if(salvo.player === Number(gamePlayerId)) {
+            if(salvo.player === Number(playerId)) {
                 //playerSalvo = {1: ["A1", "B2"...]}
                 playerSalvo[salvo.turn] = salvo.locations
             }
@@ -133,28 +134,6 @@ function updateGrids() {
     })
 }
 
-//const testRequest = async () => {
-//    let gamePlayerId = paramObj(location.href);
-//    const response = await fetch(`/api/games/players/${gamePlayerId}/salvos`, {
-//          headers: {
-//            'Accept': 'application/json',
-//            'Content-Type': 'application/json'
-//          },
-//          method: "POST",
-//          body: JSON.stringify({"locations": ["A1", "B1", "C1"], "turnNum": "1"})
-//    });
-//    const json = await response.json();
-//    console.log(json);
-//}
-
-//function updateSalvoLoc(locationsArr, turnNum) {
-//
-////    { "type": "destroyer", "locations": ["A1", "B1", "C1"]}
-//    let turnNum = 1;
-//    salvoLocObj["turnNum"] = turnNum;
-//    salvoLocObj["locations"] = locationsArr;
-//}
-
 
 function createShips(shipArr) {
 
@@ -180,7 +159,7 @@ function createSalvos(salvoLocArr) {
             'Content-Type': 'application/json'
           },
           method: "POST",
-          body: JSON.stringify({ turnNum: 1, locations: salvoLocArr })
+          body: JSON.stringify({ turnNum: 2, locations: salvoLocArr })
     }).then(function(res) {console.log(res)})
     .catch(function(res) {console.log(res)})
 
@@ -255,9 +234,8 @@ function createGrids() {
             if(i === 0 && j > 0) col.innerHTML = `${j}`;  // first row
             if(j === 0 && i > 0) col.innerHTML = colNames[i];  // first item
             col.id = colNames[i] + j;
-            col.addEventListener('click', function(event) {
-                clickSalvos(event);
-            })
+
+            col.addEventListener('click', clickSalvos)
             row.appendChild(col);
         }
         table.appendChild(row);
@@ -265,6 +243,9 @@ function createGrids() {
 
 }
 
+function placeSalvo(event) {
+    clickSalvos(event);
+}
 
 document.getElementById("submit-btn-ships").addEventListener("click", function(e){
     e.preventDefault();
@@ -287,18 +268,11 @@ document.getElementById("submit-btn-logout").addEventListener("click", function(
 
 document.getElementById("submit-btn-salvos").addEventListener("click", function(e){
     e.preventDefault();
-    let count = 0;
 
-    for(let i = 0; i < salvoLocArr.length; i++ ) {
-        count++;
-    }
 
-    if(count < 6) {
-        createSalvos(salvoLocArr);
-    }
-    else {
-        alert('you can maximum submit 5 salvos!');
-    }
+    if(salvoLocArr.length < 6) createSalvos(salvoLocArr);
+    else alert('you can maximum submit 5 salvos!');
+
 })
 
 function allowDrop(ev) {
@@ -381,16 +355,14 @@ function clickSalvos(ev) {
     let colId = gridId.slice(1);
     // get location of salvo on the grid
     let location = gridId;
-    salvoLocArr.push(location);
+
 
     // check value salvosGridArr
     let rowIdx = rowArr.indexOf(rowId);
 
-    let loc = salvoGridArr[rowIdx][colId -1]
+    if(salvoGridArr[rowIdx][colId-1] === true) {
 
-    if(loc === true) {
-
-        loc = false;
+        salvoGridArr[rowIdx][colId-1] = false;
 
         //remove salvo location from salvoLocArr
 
@@ -404,11 +376,8 @@ function clickSalvos(ev) {
                 }
             }
         }
-        let salvoGrid = updateGrid(rowId, colId, salvoGridArr);
 
-        console.log("THIS IS remove salvo")
-
-                // color the salvo grid
+        // color the salvo grid
 
         colorGrid(salvoGridArr, "salvo");
     }
@@ -419,57 +388,15 @@ function clickSalvos(ev) {
 
         let salvoGrid = updateGrid(rowId, colId, salvoGridArr);
 
+        salvoLocArr.push(location);
+
         console.log("THIS IS add salvo");
 
         // color the salvo grid
 
         colorGrid(salvoGridArr, "salvo");
     }
-
-
-
-
-
-
-//    myFunction(gridId);
-
-
-
-    // to "un-click" salvos
-//    var el = document.getElementById(gridId);
-//    console.log(el.classList);
-
-//    removeSalvos(ev);
-
-//    colorGrid(salvoGridArr, "salvo");
-
-//    salvoGrid = updateGrid(rowId, colId, salvoGridArr);
-//
-//    colorGrid(salvoGridArr, "salvo");
 }
-
-//function removeSalvos(ev) {
-//    let gridId = ev.srcElement.id;
-//
-//    console.log("THIS IS REMOVE EV")
-//
-//    var el = document.getElementById(gridId);
-//    el.classList.toggle("visible");
-////    el.style.backgroundColor = "white";
-////    el.style.display = 'none';
-//
-//}
-
-//function myFunction(gridId) {
-//
-//gridId = document.getElementById(gridId);
-//
-// if (gridId.style.display === "none") {
-//    gridId.style.display = "block";
-//  } else {
-//    gridId.style.display = "none";
-//  }
-//}
 
 
 /* create ships lengths */
@@ -578,10 +505,6 @@ function colorGrid(gridArr, gridType) {
     }
 
     let rowArr = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
-    let shipTable = document.getElementById("shipsGrid");
-    let salvoTable = document.getElementById("salvosGrid");
-
-
     for(let i=0; i<gridArr.length;i++) {
         for(let j=0; j<gridArr.length; j++) {
             let columnId = j+1;
@@ -634,25 +557,5 @@ function getShipDirection(shipType) {
     if(shipType === "dragD") return document.querySelector('input[name="directionD"]:checked').value;
     if(shipType === "dragB") return document.querySelector('input[name="directionB"]:checked').value;
     else return document.querySelector('input[name="directionA"]:checked').value;
- }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
