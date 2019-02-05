@@ -29,6 +29,68 @@ function paramObj(search) {
 
 /* get the game player id from the sites url */
 
+function showGamePlayers(gamePlayers) {
+
+    let playerEmailArr = [];
+    for(let player of gamePlayers) {
+        if(!playerEmailArr.includes(player.player.email)) {
+           playerEmailArr.push(player.player.email);
+        }
+    }
+
+    /* show players for the game on top of the page*/
+    for(let item of playerEmailArr) {
+        let players = document.getElementById("players");
+        let p = document.createElement("p");
+        p.innerHTML = item;
+        players.appendChild(p);
+    }
+
+}
+
+function createShipGrid(shipsArr) {
+
+    let shipLocations = [];
+    for(let ship of shipsArr) {
+        for(let loc of ship.locations) shipLocations.push(loc);
+    }
+    for(let locationCode of shipLocations) {
+        let rowId = locationCode[0];
+        let colId = locationCode.slice(1);
+        //after creating the basic array it is updated -> updateGrid func
+        shipGridArr = updateGrid(rowId, colId, shipGridArr);
+    }
+
+    return shipGridArr
+
+}
+
+function createSalvoGrid(salvosArr) {
+    let gamePlayerId = Number(paramObj(location.href));
+    let playerSalvo = salvosArr.filter(s => s.gamePlayerId === gamePlayerId)[0].salvos
+    let opponentSalvo = salvosArr.filter(s => s.gamePlayerId !== gamePlayerId)[0].salvos
+
+    for(let turnKey in playerSalvo) {
+        let locations = playerSalvo[turnKey] //"1", "2".....
+        for(let locCode of locations) {
+            let tableId = document.querySelectorAll(`#salvosGrid #${locCode}`); //A1, B2
+            let singleElement = tableId[0];
+            singleElement.style.backgroundColor = 'red';
+            singleElement.innerHTML = turnKey;
+        }
+    }
+
+    for(let turnKey in opponentSalvo) {
+        let locations = opponentSalvo[turnKey]
+        for(let locCode of locations) {
+            let tableId = document.querySelectorAll(`#shipsGrid #${locCode}`);
+            let singleElement = tableId[0];
+            singleElement.style.backgroundColor = 'grey';
+            singleElement.innerHTML = turnKey;
+        }
+    }
+}
+
 
 function updateGrids() {
 //http://localhost:8080/api/game_view/
@@ -41,96 +103,21 @@ function updateGrids() {
     fetch(url).then(res => res.json())
     .then(json => {
 
-        let playerEmailArr = [];
-        /* ships data */
-        let shipsArr = json.ships;
-        /* salvos data */
-        let salvosArr = json.salvos;
-        console.log("SALVOSARR", salvosArr);
-
         /* show players for the game on top of the page*/
         let gamePlayers = json.gamePlayers;
-        for(let player of gamePlayers) {
-            if(!playerEmailArr.includes(player.player.email)) {
-               playerEmailArr.push(player.player.email);
-            }
-        }
-
-        /* show players for the game on top of the page*/
-        for(let item of playerEmailArr) {
-            let players = document.getElementById("players");
-            let p = document.createElement("p");
-            p.innerHTML = item;
-            players.appendChild(p);
-        }
+        showGamePlayers(gamePlayers)
 
         /* add the ships on their designated locations to the grid */
-
-        let shipLocations = [];
-        for(let ship of shipsArr) {
-            for(let loc of ship.locations) shipLocations.push(loc);
-        }
-        for(let locationCode of shipLocations) {
-            let rowId = locationCode[0];
-            let colId = locationCode.slice(1);
-            //after creating the basic array it is updated -> updateGrid func
-            shipGridArr = updateGrid(rowId, colId, shipGridArr);
-        }
-
-        /* add salvos on their designated locations to the grid */
-
-        let salvoLocations = [];
-        for(let salvos of salvosArr) {
-            for(let loc of salvos.locations) salvoLocations.push(loc);
-        }
-        for(let locationCode of salvoLocations) {
-            let rowId = locationCode[0];
-            let colId = locationCode.slice(1);
-            //after creating the basic array it is updated -> updateGrid func
-            salvoGridArr = updateGrid(rowId, colId, salvoGridArr);
-            // remove event listener click if salvo already exists
-            document.querySelector(`#salvosGrid #${locationCode}`).removeEventListener("click", clickSalvos);
-        }
-
-        let playerSalvo = {};
-        let opponentSalvo = {}
-
-        let currentPlayer = json.gamePlayers.filter(gamePlayerObj => gamePlayerObj.id === Number(gamePlayerId))[0];
-        let playerId = currentPlayer.player.id;
-
-        for(let salvo of salvosArr) {
-
-            if(salvo.player === Number(playerId)) {
-                //playerSalvo = {1: ["A1", "B2"...]}
-                playerSalvo[salvo.turn] = salvo.locations
-            }
-            else {
-                opponentSalvo[salvo.turn] = salvo.locations
-            }
-        }
-
-        for(turnKey in playerSalvo) {
-            let locations = playerSalvo[turnKey] //"1", "2".....
-            for(let locCode of locations) {
-                let tableId = document.querySelectorAll(`#salvosGrid #${locCode}`); //A1, B2
-
-                let singleElement = tableId[0];
-                singleElement.style.backgroundColor = 'red';
-                singleElement.innerHTML = turnKey;
-            }
-        }
-
-        for(turnKey in opponentSalvo) {
-            let locations = opponentSalvo[turnKey]
-            for(let locCode of locations) {
-                let tableId = document.querySelectorAll(`#shipsGrid #${locCode}`);
-                let singleElement = tableId[0];
-                singleElement.style.backgroundColor = 'grey';
-                singleElement.innerHTML = turnKey;
-            }
-        }
-
+        /* ships data */
+        let shipsArr = json.ships;
+        shipGridArr = createShipGrid(shipsArr)
         colorGrid(shipGridArr, "ship")
+
+        /* salvos data */
+        let salvosArr = json.salvos;
+        /* add salvos on their designated locations to the grid */
+        createSalvoGrid(salvosArr)
+
     })
 }
 
@@ -558,4 +545,198 @@ function getShipDirection(shipType) {
     if(shipType === "dragB") return document.querySelector('input[name="directionB"]:checked').value;
     else return document.querySelector('input[name="directionA"]:checked').value;
 }
+
+/* create sample JSON Hits and Sinks */
+
+
+
+let hitsSinks = {
+
+    1: {
+        p1: {
+            "destroyer": {"hits": 2, "left":2},
+            "patrolBoat": {"hits": 1, "left":1}
+        },
+        p2: {
+            "destroyer": {"hits": 2, "left":2}
+        },
+    },
+
+    2: {
+        p1: {
+            "destroyer": {"hits": 2, "left":2},
+            "patrolBoat": {"hits": 1, "left":1},
+            "career": {"hits": 1, "left":1}
+        },
+        p2: {
+            "patrolBoat": {"hits": 1, "left":1}
+        },
+    }
+}
+
+
+let table = document.getElementById("hitsSinks");
+
+
+for(let turn in hitsSinks) {
+
+    let row = document.createElement("tr");
+
+    let col0 = document.createElement("td");
+    col0.innerHTML = turn;
+    row.appendChild(col0);
+
+    let s1 = "";
+    for(let shipName in hitsSinks[turn].p1) {
+        s1 += shipName
+        s1 += "/"
+        s1 += hitsSinks[turn].p1[shipName].hits
+
+    }
+    let col1 = document.createElement("td");
+    col1.innerHTML = s1;
+    row.appendChild(col1);
+
+    let s2 = 0;
+    for(let shipName in hitsSinks[turn].p1) {
+        s2 += hitsSinks[turn].p1[shipName].left
+    }
+    let col2 = document.createElement("td");
+    col2.innerHTML = s2;
+    row.appendChild(col2);
+
+
+    let s3 = "";
+    for(let shipName in hitsSinks[turn].p2) {
+        s3 += shipName
+        s3 += "/"
+        s3 += hitsSinks[turn].p2[shipName].hits
+
+    }
+    let col3 = document.createElement("td");
+    col3.innerHTML = s3;
+    row.appendChild(col3);
+
+    let s4 = 0;
+    for(let shipName in hitsSinks[turn].p2) {
+        s4 += hitsSinks[turn].p2[shipName].left
+    }
+    let col4 = document.createElement("td");
+    col4.innerHTML = s4;
+    row.appendChild(col4);
+
+    table.appendChild(row);
+}
+
+
+
+
+
+
+
+
+//{turn1: {player1: {destroyer: {hits:2, left:1}}}}
+//
+
+
+
+
+/* create table for Hits and Sinks */
+
+//function rowSize() {
+//
+//    let count = 0;
+//
+//    for(let key in hitsSinks) {
+//        count++
+//    }
+//
+//    return count;
+//}
+
+//let rowLength = rowSize();
+//
+//let columns = ["Turn", "HitsYou", "LeftYou", "HitsOpponent", "LeftOpponent"]
+//
+//
+//let table = document.getElementById("hitsSinks");
+//
+//for (let i = 0; i < rowLength; i++) {
+//    let row = document.createElement("tr");
+//
+//        for(let j= 0; j< columns.length; j++) {
+//            let column = document.createElement("td");
+//            if(columns[j] === "Turn") column.innerHTML = i +1;
+//            if(columns[j] === "HitsYou") column.innerHTML = hitsSinks.turn1.p1.h;
+//            if(columns[j] === "HitsYou") column.innerHTML = hitsSinks.turn1.p1.h;
+//            if(columns[j] === "HitsYou") column.innerHTML = hitsSinks.turn1.p1.h;
+//            if(columns[j] === "HitsYou") column.innerHTML = hitsSinks.turn1.p1.h;
+//
+//
+//
+//            row.appendChild(column)
+//
+//        }
+//        table.appendChild(row);
+//}
+//
+//for (let i = 0; i < rowLength; i++) {
+//    let row = document.createElement("tr");
+//    for(let j= 0; j< columns.length; j++) {
+//        let column = document.createElement("td");
+//        // decide which value goes to innerHTML
+//        row.appendChild(column)
+//    }
+//    table.appendChild(row);
+//}
+
+//let table = document.getElementById("hitsSinks");
+//
+//for(let turnNumKey in hitsSinks) {
+//
+//    let row = document.createElement("tr");
+//
+//    let column = document.createElement("td");
+//    column.innerHTML = turnNumKey
+//    row.appendChild(column)
+//
+//    column = document.createElement("td");
+//    column.innerHTML = hitsSinks[turnNumKey].p1.name
+//    row.appendChild(column)
+//
+//    column = document.createElement("td");
+//    column.innerHTML = hitsSinks[turnNumKey].p1.hits
+//    row.appendChild(column)
+//
+//    column = document.createElement("td");
+//    column.innerHTML = hitsSinks[turnNumKey].p1.left
+//    row.appendChild(column)
+//
+//    column = document.createElement("td");
+//    column.innerHTML = hitsSinks[turnNumKey].p2.name
+//    row.appendChild(column)
+//
+//    column = document.createElement("td");
+//    column.innerHTML = hitsSinks[turnNumKey].p2.hits
+//    row.appendChild(column)
+//
+//    column = document.createElement("td");
+//    column.innerHTML = hitsSinks[turnNumKey].p2.left
+//    row.appendChild(column)
+//
+//    table.appendChild(row)
+//
+//}
+
+
+
+
+
+
+
+
+
+
+
+
 

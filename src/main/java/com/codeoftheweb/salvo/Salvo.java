@@ -40,7 +40,7 @@ public class Salvo {
     return locations;
   }
 
-  public  Integer getTurnNum() {
+  public Integer getTurnNum() {
     return turnNum;
   }
 

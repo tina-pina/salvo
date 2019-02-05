@@ -62,16 +62,14 @@ public class SalvoApplication {
 
 
       GamePlayer GP1 = new GamePlayer(g1, p1); // has 5 ships, has 2 salvos
-      GamePlayer GP2 = new GamePlayer(g1, p2); // has 0 ship, has 2 salvos
+      GamePlayer GP2 = new GamePlayer(g1, p2); // has 2 ship, has 2 salvos
       GamePlayer GP3 = new GamePlayer(g2, p2); // has 5 ships,
       GamePlayer GP4 = new GamePlayer(g2, p3); // has 0 ship
-      GamePlayer GP5 = new GamePlayer(g2, p4); // has 0 ship
       GamePlayer GP6 = new GamePlayer(g3, p4); // has 0 ship
       gamePlayerRepo.save(GP1);
       gamePlayerRepo.save(GP2);
       gamePlayerRepo.save(GP3);
       gamePlayerRepo.save(GP4);
-      gamePlayerRepo.save(GP5);
       gamePlayerRepo.save(GP6);
 
       Ship S1 = new Ship("Aircraft Carrier", new ArrayList<String>(asList("B5", "B6", "B7", "B8", "B9")), GP1);
@@ -84,6 +82,8 @@ public class SalvoApplication {
 			Ship S13 = new Ship("Submarine", new ArrayList<String>(asList("G2", "H2", "I2")) , GP3);
 			Ship S14 = new Ship("Destroyer", new ArrayList<String>(asList("G7", "G8", "G9")) , GP3);
 			Ship S15 = new Ship("Patrol Boat", new ArrayList<String>(asList("J9", "J10")) , GP3);
+      Ship S16 = new Ship("Aircraft Carrier", new ArrayList<String>(asList("B5", "B6", "B7", "B8", "B9")), GP2);
+      Ship S17 = new Ship("Battleship", new ArrayList<String>(asList("D4", "D5", "D6", "D7")) , GP2);
 			shipRepo.save(S1);
       shipRepo.save(S2);
       shipRepo.save(S3);
@@ -94,6 +94,9 @@ public class SalvoApplication {
       shipRepo.save(S13);
       shipRepo.save(S14);
       shipRepo.save(S15);
+      shipRepo.save(S16);
+      shipRepo.save(S17);
+
 
 
 			Salvo Sa1 = new Salvo(new ArrayList<String>(asList("C2", "C3", "C4", "C5", "C6")), GP1,  1);

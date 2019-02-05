@@ -153,8 +153,7 @@
 
    .containerShipsSalvos {
         display: flex;
-        justify-content: space-between
-
+        justify-content: space-around;
    }
 
     </style>
@@ -255,6 +254,25 @@
         <form action="">
             <button id="submit-btn-salvos">submit salvos</button>
         </form>
+
+        <div>
+            <table id="hitsSinks" class="mt-2">
+                <tr>
+                    <th rowspan="2">Turn</th>
+                    <th colspan="2">Hits on you</th>
+                    <th colspan="2">Hits on opponent</th>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <!--<td>Hits</td>-->
+                    <td>Left</td>
+                    <td>Name</td>
+                    <!--<td>Hits</td>-->
+                    <td>Left</td>
+
+                </tr>
+            </table>
+        </div>
     </div>
 
 

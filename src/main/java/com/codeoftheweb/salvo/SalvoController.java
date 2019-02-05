@@ -1,24 +1,14 @@
 package com.codeoftheweb.salvo;
 
-import com.codeoftheweb.salvo.dto.GameDTO;
-import com.codeoftheweb.salvo.dto.PlayerInfoDTO;
-import com.sun.tools.internal.ws.processor.generator.CustomExceptionGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static java.util.Arrays.asList;
 
 
 @RestController
@@ -44,6 +34,72 @@ public class SalvoController {
         return authentication == null || authentication instanceof AnonymousAuthenticationToken;
     }
 
+    private Map<String, Object> makeMap(String key, Object value) {
+      Map<String, Object> map = new HashMap<>();
+      map.put(key, value);
+      return map;
+    }
+
+    // create player object
+    private Map<String, Object> createPlayerObj(Player player) {
+      Map<String, Object> playerObj = new HashMap<String, Object>();
+      playerObj.put("id", player.getId());
+      playerObj.put("email", player.getUsername());
+      return playerObj;
+    }
+
+    //create shipsObj
+    private  Map<String, Object> createShipObj(Ship ship) {
+      Map<String, Object> oneShip = new LinkedHashMap<String, Object>();
+      oneShip.put("type", ship.getType());
+      oneShip.put("locations", ship.getLocations());
+      return oneShip;
+    }
+
+    private Map<String, Object> createSalvoGpObj (GamePlayer gamePlayer) {
+      Map<String, Object> gpSalvo = new LinkedHashMap<String, Object>();
+      gpSalvo.put("gamePlayerId", gamePlayer.getId());
+      gpSalvo.put("gamePlayerEmail", gamePlayer.getPlayer().getUsername());
+      gpSalvo.put("salvos", gamePlayer.getSalvos().stream()
+        .collect(Collectors.toMap(Salvo::getTurnNum, Salvo::getLocations)));
+      return gpSalvo;
+    }
+
+    //create game object
+    public Map<String, Object> createGameObj (Game game) {
+      Map<String, Object> newGame = new HashMap<String, Object>();
+      newGame.put("id", game.getId());
+      newGame.put("created", game.getDate());
+      newGame.put("gamePlayers", getGamePlayers(game));
+      return newGame;
+    }
+
+    // fill the game player object with id, score, player
+    private Map<String, Object> createGpObj(GamePlayer gamePlayer) {
+      Map<String, Object> gp = new HashMap<String, Object>();
+      gp.put("id", gamePlayer.getId());
+      gp.put("player", createPlayerObj(gamePlayer.getPlayer()));
+
+      try {
+        gp.put("score", gamePlayer.getScore().getScore());
+      } catch (NullPointerException ne) {
+        gp.put("score", 0.0);
+      }
+
+      return gp;
+    }
+
+    //get gamePlayers in a game
+    private List<Object> getGamePlayers(Game game) {
+      return game.getGamePlayers().stream().map(gp -> createGpObj(gp)).collect(Collectors.toList());
+    }
+
+    // get games
+    private List<Object> getGames() {
+      return gameRepo.findAll().stream().map(game -> createGameObj(game)).collect(Collectors.toList());
+    }
+
+
     /*
      * all games (no login needed)
      * */
@@ -58,7 +114,6 @@ public class SalvoController {
 
         Player currentPlayer = playerRepo.findByUsername(authentication.getName());
 
-
         Game newGame = new Game(date);
         gameRepo.save(newGame);
 
@@ -69,82 +124,17 @@ public class SalvoController {
 
         Map<String, String> body = new HashMap<>();
         body.put("gpid", gpID.toString());
+
         return new ResponseEntity<Object>(body, HttpStatus.CREATED);
-
     }
-        // create gamePlayer and save
-
-
 
     @RequestMapping("/api/games")
     public Map<String, Object> getAllGames() {
-
-        // empty array [] // {"", ...}
-        List<Map<String, Object>> gameList = new ArrayList<Map<String, Object>>();
-
-        // original data [{}, {}, {},...]
-        List<Game> games = gameRepo.findAll();
-
-        for (Game g : games) {
-
-            // empty obj {}
-            Map<String, Object> gameObj = new HashMap<String, Object>();
-
-            // add key value id {"id": 1}
-            gameObj.put("id", g.getId());
-
-            // add key value created {
-            //      "id": 1,
-            //      "created": .....
-            // }
-            gameObj.put("created", g.getDate());
-
-            // players array
-            List<Map<String, Object>> gamePlayerList = new ArrayList<Map<String, Object>>();
-            // playerList.put(...)
-
-            Set<GamePlayer> gamePlayers = g.getGamePlayers();
-
-            for (GamePlayer gp : gamePlayers) {
-
-                long gamePlayerId = gp.getId();
-                Player p = gp.getPlayer();
-                long playerId = p.getId();
-                String playerEmail = p.getUsername();
-
-                Map<String, Object> gamePlayerObj = new HashMap<String, Object>();
-                gamePlayerObj.put("id", gamePlayerId);
-
-                Map<String, Object> playerObj = new HashMap<String, Object>();
-                playerObj.put("id", playerId);
-                playerObj.put("email", playerEmail);
-
-                try {
-                    playerObj.put("score", gp.getScore().getScore());
-                } catch (NullPointerException e) {
-
-                }
-
-                gamePlayerObj.put("player", playerObj);
-                gamePlayerList.add(gamePlayerObj);
-
-            }
-
-            gameObj.put("gamePlayers", gamePlayerList);
-
-            // [{}, ...]
-            gameList.add(gameObj);
-        }
-
-        Map<String, Object> newObj = new HashMap<String, Object>();
-        newObj.put("games", gameList);
-
-        // {games: [.......]}
-
-        return newObj;
-
+      HashMap<String, Object> gamesObj = new HashMap<String, Object>();
+      gamesObj.put("games", gameRepo.findAll().stream()
+        .map(game -> createGameObj(game)).collect(Collectors.toList()));
+      return gamesObj;
     }
-
 
     /*
      * create a new player with post method
@@ -164,15 +154,6 @@ public class SalvoController {
         return new ResponseEntity<>(makeMap("id", newPlayer.getId()), HttpStatus.CREATED);
     }
 
-    private Map<String, Object> makeMap(String key, Object value) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(key, value);
-        return map;
-    }
-
-
-    //return all ids of GamePlayer which are played by player --> gp id by current player
-
     @RequestMapping("/api/player/playerGameIds")
     private Object getAllGPIDs(Authentication authentication) {
         Map<String, Object> obj = new HashMap<>();
@@ -186,51 +167,30 @@ public class SalvoController {
      * */
     @RequestMapping("/api/player")
     private Object getPlayerInfo(Authentication authentication) {
-        if (isGuest(authentication)) {
-            return "Login First";
-        }
+        if (isGuest(authentication)) return "Login First";
 
-        PlayerInfoDTO dto = new PlayerInfoDTO();
+        Player player = playerRepo.findByUsername(authentication.getName());
 
-        String username = authentication.getName();
-        Player player = playerRepo.findByUsername(username);
+        HashMap<String, Object> playerObj = new HashMap<String, Object>();
+        playerObj.put("player", createPlayerObj(player));
 
-        // Create player
-        HashMap<String, String> playerObj = new HashMap<String, String>();
-        playerObj.put("id", Long.toString(player.getId()));
-        playerObj.put("name", username);
-        dto.setPlayer(playerObj);
+        playerObj.put("games", player.getGamePlayers().stream()
+          .map(gp -> createGameObj(gp.getGame()))
+          .collect(Collectors.toList()));
 
-        // Create games
-        List<GameDTO> gamesList = new ArrayList<GameDTO>();
-        Set<GamePlayer> gamePlayers = player.getGamePlayers();
+        playerObj.put("ships", player.getGamePlayers().stream()
+            .map(gp -> gp.getShips())
+            .flatMap(Collection::stream)
+            .map(ship -> createShipObj(ship))
+            .collect(Collectors.toList()));
 
-        // Get all games played by the current player
-        for (GamePlayer gp : gamePlayers) {
+        playerObj.put("salvos", player.getGamePlayers().stream()
+          .map(gp -> createSalvoGpObj(gp))
+          .collect(Collectors.toList()));
 
-            GameDTO gameDto = new GameDTO();
-            Game game = gp.getGame();
-
-            // get id
-            long gameId = game.getId();
-            gameDto.setId(gameId);
-            //get date
-            Date date = game.getDate();
-            gameDto.setCreated(date);
-
-            // For each Game, get players, ships, salvos
-            Set<GamePlayer> gameGamePlayers = game.getGamePlayers();
-            for (GamePlayer ggp : gameGamePlayers) {
-                gameDto.addGamePlayer(ggp);
-                gameDto.addSalvo(ggp);
-                gameDto.addShip(ggp);
-            }
-            gamesList.add(gameDto);
-        }
-
-        dto.setGames(gamesList);
-        return dto;
+        return playerObj;
     }
+
 
     /*
      * the game player defined in the url in all the recent games with other game players
@@ -242,34 +202,29 @@ public class SalvoController {
         String gameviewPlayer = gamePlayerRepository.findOne(gamePlayerId).getPlayer().getUsername();
         if (currentUsername.equals(gameviewPlayer)) {
 
-            GameDTO dto = new GameDTO();
+            Map<String, Object> gpObj = new LinkedHashMap<String, Object>();
+            GamePlayer gp = gamePlayerRepository.findOne(gamePlayerId);
 
-            GamePlayer gamePlayer = gamePlayerRepository.findOne(gamePlayerId);
+            gpObj.put("id", gp.getGame().getId());
+            gpObj.put("created", gp.getGame().getDate());
+            gpObj.put("gamePlayers", gp.getGame().getGamePlayers().stream()
+              .map(gp -> createGpObj(gp))
+              .collect(Collectors.toList()));
+            gpObj.put("ships", gp.getShips().stream()
+              .map(oneShip -> createShipObj(oneShip))
+              .collect(Collectors.toList()));
+            gpObj.put("salvos", gp.getGame().getGamePlayers().stream()
+              .map(gp -> createSalvoGpObj(gp))
+              .collect(Collectors.toList()));
+//            gpObj.put("history", gamePlayerRepository.findOne(gamePlayerId).getGame().getGamePlayers().stream()
+//              .map(gp -> createHitsSinksObj(gp))
+//              .collect(Collectors.toList()));
 
-            Game game = gamePlayer.getGame();
-
-
-            dto.setId(game.getId());
-            dto.setCreated(game.getDate());
-
-            Set<GamePlayer> gamePlayers = game.getGamePlayers();
-
-            //here we get several game players (and their locations) for our salvo array
-            for (GamePlayer gp : gamePlayers) {
-                // create player obj
-                dto.addGamePlayer(gp);
-                // create ship Array
-                dto.addShip(gp);
-                // create salvo Array
-                dto.addSalvo(gp);
-            }
-
-            return new ResponseEntity<Object>(dto, HttpStatus.ACCEPTED);
+            return new ResponseEntity<Object>(gpObj, HttpStatus.ACCEPTED);
         } else
             {
             return new ResponseEntity<Object>(makeMap("error", "unauthorized"), HttpStatus.UNAUTHORIZED);
         }
-
     }
 
     @RequestMapping("/api/game/{gameId}/players")

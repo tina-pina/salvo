@@ -12,7 +12,7 @@ function isUserLoggedIn() {
     .then(response => response.json())
     .then(json => {
         if(json.status === 401) return "";
-        else return json.player.name;
+        else return json.player.email;
     })
 }
 
@@ -24,7 +24,7 @@ function calculateLeaderBoardStats(gameData) {
         for(let gp of game.gamePlayers){
 
             let playerEmail = gp.player.email;
-            let playerScore = gp.player.score;
+            let playerScore = gp.score;
 
             if(playerEmail in scoreObj) {
                 scoreObj[playerEmail]["total"] += playerScore;
@@ -221,7 +221,6 @@ function gameLinks() {
 
                 let gameGPIdArr = game.className.split(' ').map(c => Number(c.replace('gp', '')));
                 let findCommonId = intersection(myGamePlayerIds, gameGPIdArr);
-
 
                 if(findCommonId.length === 0) {
                     // For other people's games

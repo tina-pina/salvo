@@ -28,7 +28,7 @@ public class Player {
         this.password = password;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
