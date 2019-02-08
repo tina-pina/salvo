@@ -72,32 +72,39 @@ public class SalvoApplication {
       gamePlayerRepo.save(GP4);
       gamePlayerRepo.save(GP6);
 
-      Ship S1 = new Ship("Aircraft Carrier", new ArrayList<String>(asList("B5", "B6", "B7", "B8", "B9")), GP1);
+      Ship S1 = new Ship("AircraftCarrier", new ArrayList<String>(asList("B5", "B6", "B7", "B8", "B9")), GP1);
 			Ship S2 = new Ship("Battleship", new ArrayList<String>(asList("D4", "D5", "D6", "D7")) , GP1);
 			Ship S3 = new Ship("Submarine", new ArrayList<String>(asList("F3", "G3", "H3")) , GP1);
 			Ship S4 = new Ship("Destroyer", new ArrayList<String>(asList("F5", "G5", "H5")) , GP1);
-			Ship S5 = new Ship("Patrol Boat", new ArrayList<String>(asList("I8", "I9")) , GP1);
-			Ship S11 = new Ship("Aircraft Carrier", new ArrayList<String>(asList("C2", "C3", "C4", "C5", "C6")) , GP3);
+			Ship S5 = new Ship("PatrolBoat", new ArrayList<String>(asList("I8", "I9")) , GP1);
+      Ship S6 = new Ship("AircraftCarrier", new ArrayList<String>(asList("B5", "B6", "B7", "B8", "B9")), GP2);
+      Ship S7 = new Ship("Battleship", new ArrayList<String>(asList("D4", "D5", "D6", "D7")) , GP2);
+      Ship S8 = new Ship("Submarine", new ArrayList<String>(asList("F3", "G3", "H3")) , GP2);
+      Ship S9 = new Ship("Destroyer", new ArrayList<String>(asList("F5", "G5", "H5")) , GP2);
+      Ship S10 = new Ship("PatrolBoat", new ArrayList<String>(asList("I8", "I9")) , GP2);
+
+			Ship S11 = new Ship("AircraftCarrier", new ArrayList<String>(asList("C2", "C3", "C4", "C5", "C6")) , GP3);
 			Ship S12 = new Ship("Battleship", new ArrayList<String>(asList("E2", "E3", "E4", "E5")) , GP3);
 			Ship S13 = new Ship("Submarine", new ArrayList<String>(asList("G2", "H2", "I2")) , GP3);
 			Ship S14 = new Ship("Destroyer", new ArrayList<String>(asList("G7", "G8", "G9")) , GP3);
-			Ship S15 = new Ship("Patrol Boat", new ArrayList<String>(asList("J9", "J10")) , GP3);
-      Ship S16 = new Ship("Aircraft Carrier", new ArrayList<String>(asList("B5", "B6", "B7", "B8", "B9")), GP2);
-      Ship S17 = new Ship("Battleship", new ArrayList<String>(asList("D4", "D5", "D6", "D7")) , GP2);
+			Ship S15 = new Ship("PatrolBoat", new ArrayList<String>(asList("J9", "J10")) , GP3);
+//      Ship S16 = new Ship("Aircraft Carrier", new ArrayList<String>(asList("B5", "B6", "B7", "B8", "B9")), GP2);
+//      Ship S17 = new Ship("Battleship", new ArrayList<String>(asList("D4", "D5", "D6", "D7")) , GP2);
 			shipRepo.save(S1);
       shipRepo.save(S2);
       shipRepo.save(S3);
       shipRepo.save(S4);
       shipRepo.save(S5);
+      shipRepo.save(S6);
+      shipRepo.save(S7);
+      shipRepo.save(S8);
+      shipRepo.save(S9);
+      shipRepo.save(S10);
       shipRepo.save(S11);
       shipRepo.save(S12);
       shipRepo.save(S13);
       shipRepo.save(S14);
       shipRepo.save(S15);
-      shipRepo.save(S16);
-      shipRepo.save(S17);
-
-
 
 			Salvo Sa1 = new Salvo(new ArrayList<String>(asList("C2", "C3", "C4", "C5", "C6")), GP1,  1);
       Salvo Sa2 = new Salvo(new ArrayList<String>(asList("C1", "C5", "D1", "A1", "B4")), GP1,  2);

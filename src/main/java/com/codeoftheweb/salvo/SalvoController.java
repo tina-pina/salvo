@@ -100,6 +100,71 @@ public class SalvoController {
     }
 
 
+    private Map<String, Object> createHits(Salvo salvo, String userName) {
+      /* How many hits are made by our salvo for each of opponents' ships */
+
+      GamePlayer opponentPlayer = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gp -> gp.getPlayer().getUsername() != userName).findAny().get();
+
+      Set<Ship> opponentShips = opponentPlayer.getShips();
+      String[] arrTypeArr = new String[] {"AircraftCarrier", "Battleship", "Submarine", "Destroyer", "PatrolBoat"};
+
+      Map<String, Object> shipObj = new HashMap<String, Object>();
+
+      for(String shipType: arrTypeArr) {
+          Ship targetShip = opponentShips.stream().filter(s -> s.getType() == shipType).findAny().get();
+          List<String> targetHits = targetShip.getLocations().stream().filter(loc -> salvo.getLocations().contains(loc)).collect(Collectors.toList());
+
+          Map<String, Object> obj = new HashMap<String, Object>();
+          obj.put("hits", targetHits.size());
+          obj.put("left", targetShip.getLocations().size() - targetHits.size());
+
+          shipObj.put(shipType, obj);
+      }
+
+      return shipObj;
+    }
+
+    private Map<String, Object> createLeft(Salvo salvo, String userName) {
+      /* How many ships are hit by opponents' salvo */
+
+      GamePlayer gamePlayer = salvo.getGamePlayer().getGame().getGamePlayers().stream().filter(gp -> gp.getPlayer().getUsername() == userName).findAny().get();
+
+      Set<Ship> ourShips = gamePlayer.getShips();
+      String[] arrTypeArr = new String[] {"AircraftCarrier", "Battleship", "Submarine", "Destroyer", "PatrolBoat"};
+
+      Map<String, Object> shipObj = new HashMap<String, Object>();
+      for(String shipType: arrTypeArr) {
+        Ship targetShip = ourShips.stream().filter(s -> s.getType().equals(shipType)).findAny().get();
+        List<String> targetHits = targetShip.getLocations().stream().filter(loc -> salvo.getLocations().contains(loc)).collect(Collectors.toList());
+
+        Map<String, Object> obj = new HashMap<String, Object>();
+        obj.put("hits", targetHits.size());
+        obj.put("left", targetShip.getLocations().size() - targetHits.size());
+
+        shipObj.put(shipType, obj);
+      }
+
+      return shipObj;
+    }
+
+    private Map<String, Object> createHitsLeft(GamePlayer gp, String userName) {
+      GamePlayer gamePlayer = gp.getGame().getGamePlayers().stream().filter(_gp -> _gp.getPlayer().getUsername().equals(userName)).findAny().get();
+      Map<String, Object> obj = new HashMap<String, Object>();
+      obj.put("hitsLeft", gamePlayer.getSalvos().stream()
+        //.map(salvo -> createHits(salvo, userName))
+        .collect(Collectors.toMap(
+          salvo -> salvo.getTurnNum().toString(),
+          salvo -> createHits(salvo, userName)
+        )));
+//      obj.put("left", gamePlayer.getSalvos().stream()
+//        //.map(salvo -> createHits(salvo, userName))
+//        .collect(Collectors.toMap(
+//          salvo -> salvo.getTurnNum().toString(),
+//          salvo -> createHits(salvo, userName)
+//        )));
+      return obj;
+    }
+
     /*
      * all games (no login needed)
      * */
@@ -208,17 +273,20 @@ public class SalvoController {
             gpObj.put("id", gp.getGame().getId());
             gpObj.put("created", gp.getGame().getDate());
             gpObj.put("gamePlayers", gp.getGame().getGamePlayers().stream()
-              .map(gp -> createGpObj(gp))
+              .map(gamePl -> createGpObj(gamePl))
               .collect(Collectors.toList()));
             gpObj.put("ships", gp.getShips().stream()
               .map(oneShip -> createShipObj(oneShip))
               .collect(Collectors.toList()));
             gpObj.put("salvos", gp.getGame().getGamePlayers().stream()
-              .map(gp -> createSalvoGpObj(gp))
+              .map(gamePl -> createSalvoGpObj(gamePl))
               .collect(Collectors.toList()));
-//            gpObj.put("history", gamePlayerRepository.findOne(gamePlayerId).getGame().getGamePlayers().stream()
-//              .map(gp -> createHitsSinksObj(gp))
-//              .collect(Collectors.toList()));
+            gpObj.put("hitsLeftShips", gamePlayerRepository.findOne(gamePlayerId).getGame().getGamePlayers().stream()
+              //.map(gamePl -> createHitsLeft(gamePl, gamePl.getPlayer().getUsername()))
+              .collect(Collectors.toMap(
+                  gamePl -> gamePl.getPlayer().getUsername(),
+                  gamePl -> createHitsLeft(gamePl, gamePl.getPlayer().getUsername())))
+            );
 
             return new ResponseEntity<Object>(gpObj, HttpStatus.ACCEPTED);
         } else
@@ -292,6 +360,7 @@ public class SalvoController {
 
         for(Ship s: ships) {
             ArrayList<String> shipLocations = new ArrayList<String>(s.getLocations());
+
             shipRepository.save(new Ship(s.getType(), shipLocations, gp));
         }
         return new ResponseEntity<>(makeMap("success", "ships are created"), HttpStatus.CREATED);
