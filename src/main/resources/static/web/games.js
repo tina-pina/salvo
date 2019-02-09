@@ -17,6 +17,7 @@ function isUserLoggedIn() {
 }
 
 
+
 function calculateLeaderBoardStats(gameData) {
     let gameArr = gameData.games;
     let scoreObj = {}

@@ -11,6 +11,9 @@ console.log(salvoLocArr)
 createGrids();
 updateGrids();
 
+// polling game state
+setInterval(getGameState, 4000);
+
 
 function paramObj(search) {
   var obj = {};
@@ -47,6 +50,21 @@ function showGamePlayers(gamePlayers) {
     }
 
 }
+
+
+
+function getGameState(){
+
+    let gamePlayerId = paramObj(location.href)
+    fetch(`/api/check_game_state/${gamePlayerId}/1`)
+    .then(response => response.json())
+    .then(json => {
+        console.log(json);
+    })}
+
+
+
+
 
 function createShipGrid(shipsArr) {
 
@@ -146,7 +164,7 @@ function createSalvos(salvoLocArr) {
             'Content-Type': 'application/json'
           },
           method: "POST",
-          body: JSON.stringify({ turnNum: 2, locations: salvoLocArr })
+          body: JSON.stringify({ turnNum: 1, locations: salvoLocArr })
     }).then(function(res) {console.log(res)})
     .catch(function(res) {console.log(res)})
 
@@ -154,10 +172,11 @@ function createSalvos(salvoLocArr) {
 
 
 function getShipName(shipType) {
-    if(shipType === "dragP") return "patrol boat";
-    if(shipType === "dragS") return "submarine boat";
-    if(shipType === "dragB") return "battleship";
-    if(shipType === "dragA") return "aircraft carrier";
+    if(shipType === "dragP") return "PatrolBoat";
+    if(shipType === "dragS") return "SubmarineBoat";
+    if(shipType === "dragB") return "Battleship";
+    if(shipType === "dragA") return "AircraftCarrier";
+    if(shipType === "dragD") return "Destroyer";
 }
 
 
@@ -548,7 +567,6 @@ function createHitsSinks() {
     .then(json => {
 
         let username = json.player.email
-
         getHitsSinksData()
         .then(hitsSinks => {
 
