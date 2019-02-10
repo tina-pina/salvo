@@ -32,5 +32,5 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 	testCompile 'org.springframework.boot:spring-boot-starter-test'
 	compile("org.springframework.boot:spring-boot-starter-security")
-	compile group: 'org.postgresql', name: 'postgresql', version: '9.3-1100-jdbc4'
+	// compile group: 'org.postgresql', name: 'postgresql', version: '9.3-1100-jdbc4'
 }
