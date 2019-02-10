@@ -29,7 +29,7 @@ dependencies {
 	compile 'org.springframework.boot:spring-boot-starter-data-jpa'
 	compile 'org.springframework.boot:spring-boot-starter-data-rest'
 	compile 'org.springframework.boot:spring-boot-starter-web'
-	runtimeOnly 'com.h2database:h2'
+	compile 'com.h2database:h2'
 	testCompile 'org.springframework.boot:spring-boot-starter-test'
 	compile("org.springframework.boot:spring-boot-starter-security")
 	// compile group: 'org.postgresql', name: 'postgresql', version: '9.3-1100-jdbc4'
