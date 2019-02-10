@@ -161,12 +161,17 @@
 </head>
 <body>
 
-<div id="players">
-
+<div id="row players">
+    <p class="col-6 text-center" id="player1"></p>
+    <p class="col-6 text-center" id="player2"></p>
 </div>
 
 <div class="headers">
     <h2>Ship and Salvo Locations</h2>
+</div>
+
+<div>
+    <h3 class="text-center" id="gameState"></h3>
 </div>
 
 <div class="container">
@@ -185,10 +190,11 @@
 
 </div>
 
-<div class="containerShipsSalvos">
-    <div class="containerShips">
+<div class="row containerShipsSalvos">
+
+    <div class="col-6 containerShips">
         <div id="shipOptions">
-            <h1>Available ships</h1>
+            <h3>Ship Panel</h3>
 
             <div>
                 <span class="shipName">Patrol Boat</span>
@@ -249,8 +255,8 @@
         </div>
     </div>
 
-
-    <div class="containerSalvos">
+    <div class="col-6 containerSalvos">
+        <h3>Salvo Panel</h3>
         <form action="">
             <button id="submit-btn-salvos">submit salvos</button>
         </form>
@@ -263,13 +269,12 @@
                     <th colspan="2">Hits on opponent</th>
                 </tr>
                 <tr>
-                    <td>Name</td>
+                    <td>Ship Type</td>
                     <!--<td>Hits</td>-->
                     <td>Left</td>
-                    <td>Name</td>
+                    <td>Ship Type</td>
                     <!--<td>Hits</td>-->
                     <td>Left</td>
-
                 </tr>
             </table>
         </div>

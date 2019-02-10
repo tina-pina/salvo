@@ -2,17 +2,16 @@
 /* drag/ drop part */
 let shipGridArr = generateGridArray();
 let salvoGridArr = generateGridArray();
-console.log(salvoGridArr);
 let shipData = [];
 let salvoLocArr = [];
-console.log(salvoLocArr)
-// let salvoLocObj = {};
+let currentTurn = 1;
 
+/* display grid */
 createGrids();
-updateGrids();
 
-// polling game state
-setInterval(getGameState, 4000);
+/* polling game state */
+getGameView();
+setInterval(getGameView, 2000);
 
 
 function paramObj(search) {
@@ -30,6 +29,130 @@ function paramObj(search) {
   return keyRes.trim();
 }
 
+
+function getGameView(){
+
+    let gamePlayerId = paramObj(location.href)
+    fetch(`/api/game_view/${gamePlayerId}`)
+    .then(response => response.json())
+    .then(json => {
+
+        console.log(json);
+        /* manage ui based on game state */
+        manageUI(json.gameState.state)
+
+        /* updating turn */
+        currentTurn = json.turn;
+
+        /* Game State Message */
+        let gameState = document.getElementById("gameState");
+        gameState.innerHTML = json.gameState.message;
+
+        /* show players for the game on top of the page*/
+        let gamePlayers = json.gamePlayers;
+        showGamePlayers(gamePlayers)
+
+        /* add the ships on their designated locations to the grid */
+        /* ships data */
+        let shipsArr = json.ships;
+        shipGridArr = createShipGrid(shipsArr)
+        colorGrid(shipGridArr, "ship")
+
+        /* salvos data */
+        let salvosArr = json.salvos;
+        /* add salvos on their designated locations to the grid */
+        createSalvoGrid(salvosArr)
+
+        /* update hist board */
+        createHistoryBoard(json)
+
+    })
+}
+
+function manageUI(stateNo) {
+    let shipSalvo = document.querySelector(".containerShipsSalvos");
+    let ships = document.querySelector(".containerShips");
+    let salvoBtn = document.getElementById("submit-btn-salvos")
+
+    if(stateNo === 0) {
+       shipSalvo.style.visibility = "hidden";
+    } else  {
+       shipSalvo.style.visibility = "visible";
+    }
+
+    if(stateNo === 1) {
+       ships.style.visibility = "visible";
+    } else  {
+       ships.style.visibility = "hidden";
+    }
+
+    if(stateNo === 6) {
+       salvoBtn.style.visibility = "visible";
+    } else  {
+       salvoBtn.style.visibility = "hidden";
+    }
+}
+
+function createHistoryBoard(json) {
+    let table = document.getElementById("hitsSinks");
+
+//    get all removable rowS -> remove
+    let removeRows = document.querySelectorAll(".removableRow");
+    for(let row of removeRows) row.remove();
+
+    for(let turn = 1; turn < json.turn; turn++) {
+        let row = document.createElement("tr");
+        row.className = "removableRow"
+
+        /* turn */
+        let col0 = document.createElement("td");
+        col0.innerHTML = turn;
+        row.appendChild(col0);
+
+        /* opponent hits */
+        let col1 = document.createElement("td");
+        let hitsString = "";
+        for(let shipType in json.opponentAttackHistory[turn]) {
+            if(json.opponentAttackHistory[turn][shipType].hits !== 0) {
+                hitsString += shipType + " (" + json.opponentAttackHistory[turn][shipType].hits + ")/";
+            }
+        }
+        if(hitsString.length === 0) hitsString = "No hits!"
+        col1.innerHTML = hitsString;
+        row.appendChild(col1);
+
+        /* your own ships left*/
+        let col2 = document.createElement("td");
+        col2.innerHTML = json.yourShipsLeft[turn];
+        row.appendChild(col2);
+
+        /* your own hits */
+        let col3 = document.createElement("td");
+        let hitsStringOpp = "";
+        for(let shipType in json.yourAttackHistory[turn]) {
+            if(json.yourAttackHistory[turn][shipType].hits !== 0) {
+                hitsStringOpp += shipType + " (" + json.yourAttackHistory[turn][shipType].hits + ")/";
+            }
+        }
+        if(hitsStringOpp.length === 0) hitsStringOpp = "No hits!"
+        col3.innerHTML = hitsStringOpp;
+        row.appendChild(col3);
+
+        /* opponents ships left*/
+        let col4 = document.createElement("td");
+        col4.innerHTML = json.opponentShipsLeft[turn];
+        row.appendChild(col4);
+        table.appendChild(row);
+
+    }
+
+
+
+
+
+
+}
+
 /* get the game player id from the sites url */
 
 function showGamePlayers(gamePlayers) {
@@ -42,25 +165,16 @@ function showGamePlayers(gamePlayers) {
     }
 
     /* show players for the game on top of the page*/
-    for(let item of playerEmailArr) {
-        let players = document.getElementById("players");
-        let p = document.createElement("p");
-        p.innerHTML = item;
-        players.appendChild(p);
-    }
+    playerEmailArr.sort();
+    let player1 = document.getElementById("player1");
+    let player2 = document.getElementById("player2");
 
+    player1.innerHTML = playerEmailArr[0];
+
+    if(!playerEmailArr[1])  player2.innerHTML = "Waiting for another player to join the game!";
+    else player2.innerHTML = playerEmailArr[1];
 }
 
-
-
-function getGameState(){
-
-    let gamePlayerId = paramObj(location.href)
-    fetch(`/api/check_game_state/${gamePlayerId}/1`)
-    .then(response => response.json())
-    .then(json => {
-        console.log(json);
-    })}
 
 
 
@@ -110,36 +224,6 @@ function createSalvoGrid(salvosArr) {
 }
 
 
-function updateGrids() {
-//http://localhost:8080/api/game_view/
-
-    let gamePlayerId = paramObj(location.href);
-     console.log(gamePlayerId)
-
-    let url = (`/api/game_view/${gamePlayerId}`)
-
-    fetch(url).then(res => res.json())
-    .then(json => {
-
-        /* show players for the game on top of the page*/
-        let gamePlayers = json.gamePlayers;
-        showGamePlayers(gamePlayers)
-
-        /* add the ships on their designated locations to the grid */
-        /* ships data */
-        let shipsArr = json.ships;
-        shipGridArr = createShipGrid(shipsArr)
-        colorGrid(shipGridArr, "ship")
-
-        /* salvos data */
-        let salvosArr = json.salvos;
-        /* add salvos on their designated locations to the grid */
-        createSalvoGrid(salvosArr)
-
-    })
-}
-
-
 function createShips(shipArr) {
 
     let gamePlayerId = paramObj(location.href);
@@ -164,7 +248,7 @@ function createSalvos(salvoLocArr) {
             'Content-Type': 'application/json'
           },
           method: "POST",
-          body: JSON.stringify({ turnNum: 1, locations: salvoLocArr })
+          body: JSON.stringify({ turnNum: currentTurn, locations: salvoLocArr })
     }).then(function(res) {console.log(res)})
     .catch(function(res) {console.log(res)})
 
@@ -256,6 +340,7 @@ function placeSalvo(event) {
 document.getElementById("submit-btn-ships").addEventListener("click", function(e){
     e.preventDefault();
     createShips(shipData);
+    location.reload();
 })
 
 
@@ -275,8 +360,10 @@ document.getElementById("submit-btn-salvos").addEventListener("click", function(
     e.preventDefault();
 
 
-    if(salvoLocArr.length < 6) createSalvos(salvoLocArr);
+    if(salvoLocArr.length === 5) createSalvos(salvoLocArr);
     else alert('you can maximum submit 5 salvos!');
+    salvoLocArr = [];
+    location.reload();
 
 })
 
@@ -558,147 +645,6 @@ function getHitsSinksData() {
     return fetch(`/api/game_view/${gamePlayerId}`)
       .then(response => response.json())
 }
-
-
-function createHitsSinks() {
-
-    fetch(`/api/player`)
-    .then(response => response.json())
-    .then(json => {
-
-        let username = json.player.email
-        getHitsSinksData()
-        .then(hitsSinks => {
-
-            let table = document.getElementById("hitsSinks")
-            let hitsOnOpponent = hitsSinks.hitsLeftShips[username].hitsLeft
-            let hitsOnMe = hitsSinks.hitsLeftShips[username].hitsLeft
-
-            let numTurns = Object.keys(hitsOnOpponent).length
-
-            for(let turnNum=1; turnNum<=numTurns; turnNum++) {
-
-                let turnHitsToOpponents = hitsOnOpponent[turnNum]
-                let turnHitsFromOpponents = hitsOnMe[turnNum]
-
-                let td0 = document.createElement('td')
-                td0.innerHTML = turnNum;
-                row.appendChild(td0);
-
-                let row = document.createElement('tr')
-                let td1 = document.createElement('td')
-                for(let ship in turnHitsFromOpponents) {
-                    td1.innerHTML += `${ship} (${turnHitsFromOpponents[ship].hits}/${turnHitsFromOpponents[ship].left})`
-                }
-                row.appendChild(td1);
-
-                let td2 = document.createElement('td')
-                for(let ship in turnHitsToOpponents) {
-                    td2.innerHTML += `${ship} (${turnHitsToOpponents[ship].hits}/${turnHitsToOpponents[ship].left})`
-                }
-                row.appendChild(td2);
-
-                table.appendChild(row);
-            }
-        })
-    })
-}
-
-createHitsSinks()
-
-
-
-
-
-/* create table for Hits and Sinks */
-
-//function rowSize() {
-//
-//    let count = 0;
-//
-//    for(let key in hitsSinks) {
-//        count++
-//    }
-//
-//    return count;
-//}
-
-//let rowLength = rowSize();
-//
-//let columns = ["Turn", "HitsYou", "LeftYou", "HitsOpponent", "LeftOpponent"]
-//
-//
-//let table = document.getElementById("hitsSinks");
-//
-//for (let i = 0; i < rowLength; i++) {
-//    let row = document.createElement("tr");
-//
-//        for(let j= 0; j< columns.length; j++) {
-//            let column = document.createElement("td");
-//            if(columns[j] === "Turn") column.innerHTML = i +1;
-//            if(columns[j] === "HitsYou") column.innerHTML = hitsSinks.turn1.p1.h;
-//            if(columns[j] === "HitsYou") column.innerHTML = hitsSinks.turn1.p1.h;
-//            if(columns[j] === "HitsYou") column.innerHTML = hitsSinks.turn1.p1.h;
-//            if(columns[j] === "HitsYou") column.innerHTML = hitsSinks.turn1.p1.h;
-//
-//
-//
-//            row.appendChild(column)
-//
-//        }
-//        table.appendChild(row);
-//}
-//
-//for (let i = 0; i < rowLength; i++) {
-//    let row = document.createElement("tr");
-//    for(let j= 0; j< columns.length; j++) {
-//        let column = document.createElement("td");
-//        // decide which value goes to innerHTML
-//        row.appendChild(column)
-//    }
-//    table.appendChild(row);
-//}
-
-//let table = document.getElementById("hitsSinks");
-//
-//for(let turnNumKey in hitsSinks) {
-//
-//    let row = document.createElement("tr");
-//
-//    let column = document.createElement("td");
-//    column.innerHTML = turnNumKey
-//    row.appendChild(column)
-//
-//    column = document.createElement("td");
-//    column.innerHTML = hitsSinks[turnNumKey].p1.name
-//    row.appendChild(column)
-//
-//    column = document.createElement("td");
-//    column.innerHTML = hitsSinks[turnNumKey].p1.hits
-//    row.appendChild(column)
-//
-//    column = document.createElement("td");
-//    column.innerHTML = hitsSinks[turnNumKey].p1.left
-//    row.appendChild(column)
-//
-//    column = document.createElement("td");
-//    column.innerHTML = hitsSinks[turnNumKey].p2.name
-//    row.appendChild(column)
-//
-//    column = document.createElement("td");
-//    column.innerHTML = hitsSinks[turnNumKey].p2.hits
-//    row.appendChild(column)
-//
-//    column = document.createElement("td");
-//    column.innerHTML = hitsSinks[turnNumKey].p2.left
-//    row.appendChild(column)
-//
-//    table.appendChild(row)
-//
-//}
-
-
-
 
 
 
