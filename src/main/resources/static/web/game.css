@@ -3,6 +3,17 @@
         background-image: url("waves.png")
     }
 
+    .main {
+        width: 90%;
+        background-color: white;
+        opacity: 0.9;
+        margin: 0 auto;
+    }
+
+    #players {
+
+    }
+
     p#player1 {
         font-weight: bold;
         font-size: 18px;
@@ -150,18 +161,18 @@
    .containerShips {
         display: flex;
         flex-direction: column;
+        opacity: 0.9;
    }
 
    .containerSalvos {
         display: flex;
         flex-direction: column;
+        opacity: 0.9;
    }
 
    .containerShipsSalvos {
         display: flex;
         justify-content: space-around;
-        background-color: white;
-        opacity: 0.9;
    }
 
    .parking {

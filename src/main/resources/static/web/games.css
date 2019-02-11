@@ -11,8 +11,7 @@ h1 {
 .leaderboard {
     margin: 0 auto;
     padding: 20px;
-    background-color: white;
-    opacity: 0.5;
+    background-color: rgba(255,255,255,0.5);
     border: solid black 1px;
 }
 
@@ -26,12 +25,3 @@ h3, h4 {
     opacity: 0.8;
 }
 
-#login-form label {
-    background-color: aqua;
-    opacity: 0.5;
-}
-
-#logout-form label {
-    background-color: aqua;
-    opacity: 0.5;
-}

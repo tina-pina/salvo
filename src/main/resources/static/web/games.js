@@ -117,7 +117,7 @@ function displayGameList(gameObj) {
 
     for(let game of gameObj.games) {
         let gameId = game.id;
-        let date = new Date(game.created * 1000);
+        let date = formatDate(new Date(game.created));
         let numOfPlayers = game.gamePlayers.length;
 
         let liElem = document.createElement("li");
@@ -126,11 +126,27 @@ function displayGameList(gameObj) {
 
         console.log(liElem.className)
 
-        liElem.innerHTML = "date: " + date + "number of players: " + " (" + numOfPlayers + ")";
+        liElem.innerHTML = `ROOM ${chance.animal()} (No. Player:${numOfPlayers} / ${date}) `
+        // "date: " + date + "number of players: " + " (" + numOfPlayers + ")";
 
         olElem.appendChild(liElem);
         gameIdGet.appendChild(olElem);
     }
+}
+
+function formatDate(date) {
+  var monthNames = [
+    "January", "February", "March",
+    "April", "May", "June", "July",
+    "August", "September", "October",
+    "November", "December"
+  ];
+
+  var day = date.getDate();
+  var monthIndex = date.getMonth();
+  var year = date.getFullYear();
+
+  return day + ' ' + monthNames[monthIndex] + ' ' + year;
 }
 
 
@@ -177,23 +193,23 @@ function updateForm() {
     .then(loggedIn => {
 
         if(!loggedIn) {
-            loginForm.style.visibility = "visible"
-            logoutForm.style.visibility = "hidden"
-            alertSuccess.style.visibility = "hidden"
-            alertFail.style.visibility = "visible"
-            createGameButton.style.visibility = "hidden"
+            loginForm.style.display = "block"
+            logoutForm.style.display = "none"
+            alertSuccess.style.display = "none"
+            alertFail.style.display = "block"
+            createGameButton.style.display = "none"
         } else {
-            loginForm.style.visibility = "hidden"
-            logoutForm.style.visibility = "visible"
-            alertSuccess.style.visibility = "visible"
+            loginForm.style.display = "none"
+            logoutForm.style.display = "block"
+            alertSuccess.style.display = "block"
             alertSuccess.innerHTML = `Welcome you are logged-in ${loggedIn}`
-            alertFail.style.visibility = "hidden"
-            createGameButton.style.visibility = "visible"
+            alertFail.style.display = "none"
+            createGameButton.style.display = "block"
         }
     })
     .catch(error => {
         console.log(error)
-        alertFail.style.visibility = "visible"
+        alertFail.style.display = "block"
     })
 
 }

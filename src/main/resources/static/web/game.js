@@ -76,26 +76,26 @@ function manageUI(stateNo) {
     let shipParkingTitle = document.querySelector(".shipParkingTitle");
 
     if(stateNo === 0) {
-       shipSalvo.style.visibility = "hidden";
+       shipSalvo.style.display = "none";
 
     } else  {
-       shipSalvo.style.visibility = "visible";
+       shipSalvo.style.display = "block";
     }
 
     if(stateNo === 1) {
-       ships.style.visibility = "visible";
+       ships.style.display = "block";
     } else  {
-       ships.style.visibility = "hidden";
+       ships.style.display = "none";
     }
 
     if(stateNo === 6) {
-       salvoBtn.style.visibility = "visible";
+       salvoBtn.style.display = "block";
     }
      else  {
-       salvoBtn.style.visibility = "hidden";
+       salvoBtn.style.display = "none";
     }
     if(stateNo === 8 ) {
-        shipParkingTitle.style.visibility = "hidden";
+        shipParkingTitle.style.display = "none";
     }
 }
 
@@ -293,13 +293,12 @@ function createGrids() {
         let row = document.createElement("tr");
         for(let j=0; j<11; j++) {
             let col = document.createElement("td");
+            col.style.backgroundColor = "white";
             if(i === 0 && j === 0) col.innerHTML = ""
             else if(i === 0 && j > 0) col.innerHTML = `${j}`;  // first row
             else if(j === 0 && i > 0) col.innerHTML = colNames[i];  // first item
             else {
                 col.addEventListener('dragover', function(event){
-
-
                     allowDrop(event)
                     event.target.style.borderColor = "red";
                     event.target.style.borderWidth = "thick";
@@ -327,6 +326,7 @@ function createGrids() {
         let row = document.createElement("tr");
         for(let j=0; j<11; j++) {
             let col = document.createElement("td");
+            col.style.backgroundColor = "white";
             if(i === 0 && j > 0) col.innerHTML = `${j}`;  // first row
             if(j === 0 && i > 0) col.innerHTML = colNames[i];  // first item
             col.id = colNames[i] + j;
@@ -483,15 +483,10 @@ function clickSalvos(ev) {
     else {
 
         // update the salvo grid
-
         let salvoGrid = updateGrid(rowId, colId, salvoGridArr);
-
         salvoLocArr.push(location);
 
-        console.log("THIS IS add salvo");
-
         // color the salvo grid
-
         colorGrid(salvoGridArr, "salvo");
     }
 }

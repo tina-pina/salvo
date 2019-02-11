@@ -12,7 +12,7 @@
         </styles>
     </head>
     <body>
-        <h1 class="d-flex justify-content-center"><i class="fas fa-ship"></i>battle it out!<i class="fas fa-bomb"></i></h1>
+        <h1 class="d-flex justify-content-center"><i class="fas fa-ship"></i>SALVO!<i class="fas fa-bomb"></i></h1>
 
         <!--create leaderboard-->
         <div class="leaderboard d-flex justify-content-center align-items-center">
@@ -23,37 +23,47 @@
         </div>
 
         <!--create games-->
-        <div class="listGames d-flex align-items-center">
+        <div class="listGames d-flex justify-content-center align-items-center">
             <div class="d-flex flex-column">
-                <h4 class="text-center">Active games</h4>
+                <h4 class="text-center p-2">Active games</h4>
                 <div id="games"></div>
             </div>
         </div>
 
         <div class="d-flex justify-content-between">
-            <button class="btn btn-primary m-3" id="createGame">Create New Game</button>
+            <button class="btn btn-secondary m-3" id="createGame">Create New Game</button>
             <!--logout form-->
             <form id="logout-form" action="#" style="height: 20px">
-                <button id="submit-btn-logout" class="btn btn-primary m-3">logout</button>
+                <button id="submit-btn-logout" class="btn btn-secondary m-3">logout</button>
             </form>
         </div>
 
-        <!--form-->
-        <div class="container d-flex">
-            <!--login form-->
-            <form id="login-form" action="#" style="height: 20px">
-                <label>Email: <input id="username-form" type="email" value="j.bauer@ctu.gov" required></label>
-                <label>Password: <input id="password-form" type="password" value="24" required></label>
-                <button id="submit-btn-login" class="btn btn-primary">login</button>
-                <!--sign up button-->
-                <button id="submit-btn-signup" class="btn btn-primary">sign-up</button>
-            </form>
-        </div>
+        <!--login form-->
+        <form id="login-form" class="mx-auto w-50" action="#">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Email</label> <input id="username-form" type="email" class="form-control" value="j.bauer@ctu.gov" required>
+                    </div>
+                </div>
+            </div>
 
-        <div id="login-alert-success" class="alert alert-primary m-4" role="alert">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Password</label> <input id="password-form" type="password" class="form-control" value="24" required>
+                    </div>
+                </div>
+            </div>
+
+            <button id="submit-btn-login" class="btn btn-secondary">login</button>
+            <button id="submit-btn-signup" class="btn btn-secondary">sign-up</button>
+        </form>
+
+        <div id="login-alert-success" class="alert alert-primary m-4 text-center" role="alert">
             login successfull!
         </div>
-        <div id="login-alert-fail" class="alert alert-primary m-4" role="alert">
+        <div id="login-alert-fail" class="alert alert-primary m-4 text-center" role="alert">
             Hello Guest, please sign-up or log-in :)
         </div>
 
@@ -64,5 +74,6 @@
             crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chance/1.0.18/chance.min.js"></script>
     <script src="games.js"></script>
 </html>
