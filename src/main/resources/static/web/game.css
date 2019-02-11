@@ -3,15 +3,21 @@
         background-image: url("waves.png")
     }
 
+    p#player1 {
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    p#player2 {
+        font-weight: bold;
+        font-size: 18px;
+    }
+
     table {
       font-family: arial, sans-serif;
       table-layout: fixed;
     }
 
-    table #shipsGrid #salvosGrid {
-        width: 500px;
-        height: 700px;
-    }
 
     #shipsGrid, #salvosGrid {
         margin: 0 auto;
@@ -20,8 +26,8 @@
         width: fit-content
     }
 
-    td, th {
-      border: 2px solid darkgrey;
+    #shipsGrid td, #shipsGrid th, #salvosGrid td, #salvosGrid th {
+      border: 1px solid black;
       text-align: left;
       padding: 5px;
       width: 30px;
@@ -30,16 +36,13 @@
       z-index: -1;
     }
 
-    .container {
-       display: flex;
-       justify-content: space-around;
-       align-items: center;
-       margin: 0 auto;
-    }
-
     .headers {
        display: flex;
        justify-content: center;
+    }
+
+    span.shipName {
+        font-weight: bold;
     }
 
    #dragP {
@@ -96,7 +99,7 @@
    #patrol {
        width: 50px;
        height: 31px;
-       background-color: yellow;
+       background-color: darkgrey;
        z-index: 2;
        object-fit: cover;
    }
@@ -104,7 +107,7 @@
    #submarine {
        width: 70px;
        height: 31px;
-       background-color: yellow;
+       background-color: darkgrey;
        z-index: 2;
        object-fit: cover;
    }
@@ -112,7 +115,7 @@
    #destroyer {
        width: 70px;
        height: 31px;
-       background-color: yellow;
+       background-color: darkgrey;
        z-index: 2;
        object-fit: cover;
    }
@@ -120,7 +123,7 @@
    #battle {
         width: 90px;
         height: 31px;
-        background-color: yellow;
+        background-color: darkgrey;
         z-index: 2;
         object-fit: cover;
    }
@@ -128,7 +131,7 @@
    #aircraft {
         width: 120px;
         height: 31px;
-        background-color: yellow;
+        background-color: darkgrey;
         z-index: 2;
         object-fit: cover;
    }
@@ -136,10 +139,13 @@
    form#logout-form button {
         font-size: 20px;
         margin: 50px;
-        height: 30px;
-        width: 80px;
-        background-color: aqua;
+        text-align: center;
    }
+
+   form#logout-form {
+        text-align: center;
+        padding-bottom: 10px;
+      }
 
    .containerShips {
         display: flex;
@@ -154,4 +160,34 @@
    .containerShipsSalvos {
         display: flex;
         justify-content: space-around;
+        background-color: white;
+        opacity: 0.9;
    }
+
+   .parking {
+        margin: 20px 0;
+        padding: 20px;
+        border: solid black 1px;
+        z-index: 999;
+   }
+
+   #hitsSinks {
+        background-color: aqua;
+   }
+
+   #hitsSinks td, #hitsSinks th {
+        width: 120px;
+        text-align: left;
+        padding: 5px;
+        text-align: center;
+        z-index: -1;
+   }
+
+
+
+
+
+
+
+
+

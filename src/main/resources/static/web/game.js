@@ -73,9 +73,11 @@ function manageUI(stateNo) {
     let shipSalvo = document.querySelector(".containerShipsSalvos");
     let ships = document.querySelector(".containerShips");
     let salvoBtn = document.getElementById("submit-btn-salvos")
+    let shipParkingTitle = document.querySelector(".shipParkingTitle");
 
     if(stateNo === 0) {
        shipSalvo.style.visibility = "hidden";
+
     } else  {
        shipSalvo.style.visibility = "visible";
     }
@@ -88,8 +90,12 @@ function manageUI(stateNo) {
 
     if(stateNo === 6) {
        salvoBtn.style.visibility = "visible";
-    } else  {
+    }
+     else  {
        salvoBtn.style.visibility = "hidden";
+    }
+    if(stateNo === 8 ) {
+        shipParkingTitle.style.visibility = "hidden";
     }
 }
 
@@ -300,7 +306,7 @@ function createGrids() {
                 })
                 col.addEventListener('drop', function(event){
                     drop(event);
-                    event.target.style.borderColor = "#dddddd";
+                    event.target.style.borderColor = "blue";
                     event.target.style.borderWidth = "1px";
                 })
                 col.addEventListener('dragleave', function(event){
@@ -591,9 +597,13 @@ function colorGrid(gridArr, gridType) {
             let finalId = rowId + columnId
             if(gridArr[i][j] === true) {
                document.querySelector(`#${targetGrid} #${finalId}`).style.backgroundColor = "blue";
+               document.querySelector(`#${targetGrid} #${finalId}`).style.borderColor = "blue";
+               document.querySelector(`#${targetGrid} #${finalId}`).style.borderWidth = "1px";
             }
             else if (gridArr[i][j] === false) {
                 document.querySelector(`#${targetGrid} #${finalId}`).style.backgroundColor = "white";
+                document.querySelector(`#${targetGrid} #${finalId}`).style.borderColor = "black";
+                document.querySelector(`#${targetGrid} #${finalId}`).style.borderWidth = "1px";
             }
         }
     }
