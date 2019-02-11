@@ -4,26 +4,43 @@
         <title>Salvo!</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
               crossorigin="anonymous" />
+        <link rel="stylesheet" type="text/css" href="games.css">
+        <link href="https://fonts.googleapis.com/css?family=Sawarabi+Gothic" rel="stylesheet">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 
         <styles>
-            <!--.container {-->
-                <!--display: flex;-->
-                <!--justify-content: space-between;-->
-            <!--}-->
-
         </styles>
     </head>
     <body>
-        <h1>Lets play!</h1>
+        <h1 class="d-flex justify-content-center"><i class="fas fa-ship"></i>battle it out!<i class="fas fa-bomb"></i></h1>
 
         <!--create leaderboard-->
-        <h2>Leader Board</h2>
-        <div id="scoreboard"></div>
+        <div class="leaderboard d-flex justify-content-center align-items-center">
+            <div class="d-flex justify-content-around">
+                <div class="mr-5">
+                    <h3>Leader Board</h3>
+                </div>
+                <div id="scoreboard"></div>
+            </div>
+        </div>
 
         <!--create games-->
-        <h2>Active games</h2>
-        <div id="games"></div>
-        <button id="createGame">Create New Game</button>
+        <div class="listGames d-flex align-items-center">
+            <div class="d-flex justify-content-around">
+                <div>
+                    <h4 class="ml-2">Active games</h4>
+                </div>
+                <div id="games"></div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <button class="btn btn-primary m-3" id="createGame">Create New Game</button>
+            <!--logout form-->
+            <form id="logout-form" action="#" style="height: 20px">
+                <button id="submit-btn-logout" class="btn btn-primary m-3">logout</button>
+            </form>
+        </div>
 
         <!--form-->
         <div class="container d-flex">
@@ -31,25 +48,18 @@
             <form id="login-form" action="#" style="height: 20px">
                 <label>Email: <input id="username-form" type="email" value="j.bauer@ctu.gov" required></label>
                 <label>Password: <input id="password-form" type="password" value="24" required></label>
-                <button id="submit-btn-login">login</button>
+                <button id="submit-btn-login" class="btn btn-primary">login</button>
                 <!--sign up button-->
-                <button id="submit-btn-signup">sign-up</button>
-            </form>
-
-            <!--logout form-->
-            <form id="logout-form" action="#" style="height: 20px">
-                <button id="submit-btn-logout">logout</button>
+                <button id="submit-btn-signup" class="btn btn-primary">sign-up</button>
             </form>
         </div>
 
-        <div id="login-alert-success" class="alert alert-primary" role="alert">
+        <div id="login-alert-success" class="alert alert-primary m-4" role="alert">
             login successfull!
         </div>
-        <div id="login-alert-fail" class="alert alert-primary" role="alert">
+        <div id="login-alert-fail" class="alert alert-primary m-4" role="alert">
             Hello Guest, please sign-up or log-in :)
         </div>
-
-
 
     </body>
     <script

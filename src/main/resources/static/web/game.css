@@ -1,0 +1,157 @@
+
+    body {
+        background-image: url("waves.png")
+    }
+
+    table {
+      font-family: arial, sans-serif;
+      table-layout: fixed;
+    }
+
+    table #shipsGrid #salvosGrid {
+        width: 500px;
+        height: 700px;
+    }
+
+    #shipsGrid, #salvosGrid {
+        margin: 0 auto;
+        z-index: -1;
+        border-collapse: collapse;
+        width: fit-content
+    }
+
+    td, th {
+      border: 2px solid darkgrey;
+      text-align: left;
+      padding: 5px;
+      width: 30px;
+      height: 40px;
+      text-align: center;
+      z-index: -1;
+    }
+
+    .container {
+       display: flex;
+       justify-content: space-around;
+       align-items: center;
+       margin: 0 auto;
+    }
+
+    .headers {
+       display: flex;
+       justify-content: center;
+    }
+
+   #dragP {
+       width: 50px;
+       height: 31px;
+       margin: 10px;
+       border: none;
+       background-color: blue;
+       z-index: 2;
+       object-fit: cover;
+   }
+
+   #dragS {
+       width: 70px;
+       height: 31px;
+       margin: 10px;
+       border: none;
+       background-color: blue;
+       z-index: 2;
+       object-fit: cover;
+   }
+
+   #dragD {
+       width: 70px;
+       height: 31px;
+       margin: 10px;
+       border: none;
+       background-color: blue;
+       z-index: 2;
+       object-fit: cover;
+   }
+
+
+   #dragB {
+       width: 90px;
+       height: 31px;
+       margin: 10px;
+       border: none;
+       background-color: blue;
+       z-index: 2;
+       object-fit: cover;
+   }
+
+   #dragA {
+       width: 120px;
+       height: 31px;
+       margin: 10px;
+       border: none;
+       background-color: blue;
+       z-index: 99;
+       overflow: visible;
+   }
+
+   #patrol {
+       width: 50px;
+       height: 31px;
+       background-color: yellow;
+       z-index: 2;
+       object-fit: cover;
+   }
+
+   #submarine {
+       width: 70px;
+       height: 31px;
+       background-color: yellow;
+       z-index: 2;
+       object-fit: cover;
+   }
+
+   #destroyer {
+       width: 70px;
+       height: 31px;
+       background-color: yellow;
+       z-index: 2;
+       object-fit: cover;
+   }
+
+   #battle {
+        width: 90px;
+        height: 31px;
+        background-color: yellow;
+        z-index: 2;
+        object-fit: cover;
+   }
+
+   #aircraft {
+        width: 120px;
+        height: 31px;
+        background-color: yellow;
+        z-index: 2;
+        object-fit: cover;
+   }
+
+   form#logout-form button {
+        font-size: 20px;
+        margin: 50px;
+        height: 30px;
+        width: 80px;
+        background-color: aqua;
+   }
+
+   .containerShips {
+        display: flex;
+        flex-direction: column;
+   }
+
+   .containerSalvos {
+        display: flex;
+        flex-direction: column;
+   }
+
+   .containerShipsSalvos {
+        display: flex;
+        justify-content: space-around;
+   }

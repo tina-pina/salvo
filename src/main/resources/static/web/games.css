@@ -1,0 +1,36 @@
+body {
+    background-image: url("paperShips.jpg")
+}
+
+h1 {
+    margin: 20px 0;
+    font-family: 'Sawarabi Gothic', sans-serif;
+}
+
+.leaderboard {
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    opacity: 0.5;
+    border: solid black 1px;
+}
+
+h3, h4 {
+    margin: 0 auto !important;
+}
+
+.listGames {
+    padding-top: 15px;
+    background-color: white;
+    opacity: 0.8;
+}
+
+#login-form label {
+    background-color: aqua;
+    opacity: 0.5;
+}
+
+#logout-form label {
+    background-color: aqua;
+    opacity: 0.5;
+}
