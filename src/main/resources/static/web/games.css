@@ -1,5 +1,6 @@
 body {
-    background-image: url("paperShips.jpg")
+    background-image: url("paperShips.jpg");
+    font-size: 1.5rem;
 }
 
 h1 {

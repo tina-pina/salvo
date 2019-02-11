@@ -62,8 +62,10 @@ function displayLeaderBoard(leaderBoardStats) {
 
     // Create header
     let row = document.createElement("tr");
+    row.style.fontWeight = "bold";
     for(let header of headerTable) {
        let column = document.createElement("td");
+       column.style.padding = "15px";
        column.innerHTML = header;
        row.appendChild(column);
     }
@@ -84,12 +86,16 @@ function displayLeaderBoard(leaderBoardStats) {
         columnName.innerHTML = name;
         let columnTotal = document.createElement("td");
         columnTotal.innerHTML = total;
+        columnTotal.style.textAlign = "center";
         let columnWon = document.createElement("td");
         columnWon.innerHTML = won;
+        columnWon.style.textAlign = "center";
         let columnLost = document.createElement("td");
         columnLost.innerHTML = lost;
+        columnLost.style.textAlign = "center";
         let columnTie = document.createElement("td");
         columnTie.innerHTML = tie;
+        columnTie.style.textAlign = "center";
 
         row.appendChild(columnName);
         row.appendChild(columnTotal);
