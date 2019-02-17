@@ -32,6 +32,19 @@ public class SalvoController {
     @Autowired
     private ScoreRepository scoreRepository;
 
+    private ArrayList<String> possibleLocs = generatePossibleLocs();
+
+    private ArrayList<String> generatePossibleLocs() {
+        String[] rows = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
+        String[] cols = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
+        ArrayList<String> locs = new ArrayList<>();
+        for(String row: rows) {
+            for(String col: cols) {
+                locs.add(row + col);
+            }
+        }
+        return locs;
+    }
 
     private boolean isGuest(Authentication authentication) {
         return authentication == null || authentication instanceof AnonymousAuthenticationToken;
@@ -478,6 +491,8 @@ public class SalvoController {
               .collect(Collectors.toList()));
             gpObj.put("gameState", currentState(gamePlayerId, currentTurn));
             gpObj.put("turn", currentTurn);
+            gpObj.put("yourSalvoLocs", gp.getSalvos().stream().map(s -> s.getLocations())
+              .flatMap(Collection::stream).collect(Collectors.toList()));
 
             if(opponent != null) {
                 // you want to get hits - the result of your salvos
@@ -562,24 +577,25 @@ public class SalvoController {
             return new ResponseEntity<>(makeMap("error", "game player with this id doesn't exist"), HttpStatus.FORBIDDEN);
         }
 
-
-        ///check if all ships are placed
         if (ships.size() < 5) {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "not enough ships are placed!"), HttpStatus.FORBIDDEN);
         }
 
-        // //  // // // // // //
         if (ships.size() != 5) {
             return new ResponseEntity<Map<String, Object>>(makeMap("error", "five ships minimum need to be sent"), HttpStatus.FORBIDDEN);
         }
 
-
         //Otherwise, the ship should be added to the game player and saved, and a Created response should be sent.
-
         GamePlayer gp = gamePlayerRepository.findOne(gamePlayerId);
 
         for (Ship s : ships) {
             ArrayList<String> shipLocations = new ArrayList<String>(s.getLocations());
+
+            for (String location: shipLocations) {
+                if(!possibleLocs.contains(location)) {
+                    return new ResponseEntity<>(makeMap("error", "invalid location: invalid location code"), HttpStatus.FORBIDDEN);
+                }
+            }
 
             shipRepository.save(new Ship(s.getType(), shipLocations, gp));
         }
@@ -633,6 +649,23 @@ public class SalvoController {
         }
 
         ArrayList<String> salvoLocations = new ArrayList<String>(salvo.getLocations());
+        for(Salvo mySalvo: gamePlayerSalvos) {
+            for(String location: salvoLocations) {
+                if (mySalvo.getLocations().contains(location)) {
+                    return new ResponseEntity<>(makeMap("error", "invalid location: salvo already exists"), HttpStatus.FORBIDDEN);
+                }
+            }
+        }
+
+        for(String location: salvoLocations) {
+            if(!possibleLocs.contains(location))
+                return new ResponseEntity<>(makeMap("error", "invalid location: invalid location code"), HttpStatus.FORBIDDEN);
+        }
+
+        if(salvoLocations.size() != 5){
+            return new ResponseEntity<>(makeMap("error", "invalid location: salvo must have 5 locs"), HttpStatus.FORBIDDEN);
+        }
+
         salvoRepository.save(new Salvo(salvoLocations, currentPlayer, salvo.getTurnNum()));
 
         return new ResponseEntity<>(makeMap("success", "salvos are created"), HttpStatus.CREATED);
